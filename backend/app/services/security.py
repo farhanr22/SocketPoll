@@ -2,15 +2,15 @@ import httpx
 from fastapi import HTTPException, status
 from app.config import settings
 
-TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v1/siteverify"
+TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
 
 async def verify_turnstile(token: str) -> bool:
     """
     Verifies a Cloudflare Turnstile token by making a server-side request.
-
     Returns True if the token is valid, otherwise raises an HTTPException.
     """
+
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
@@ -20,9 +20,9 @@ async def verify_turnstile(token: str) -> bool:
                     "response": token,
                 },
             )
-            response.raise_for_status()  # Raises an exception for 4xx or 5xx status codes
+            response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
         except httpx.RequestError as e:
-            # Handle network errors or Cloudflare being down
+            # Handle any other errors
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                 detail=f"Could not verify Turnstile token: {e}",

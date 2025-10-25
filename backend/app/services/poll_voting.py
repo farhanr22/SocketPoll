@@ -8,6 +8,7 @@ from app.exceptions import (
     InvalidOptionsError,
 )
 from .poll_creation import _increment_global_stats
+from .security import verify_turnstile
 
 
 async def add_vote(poll_id: str, vote_data: VoteCreate, db: AsyncIOMotorDatabase):
@@ -26,6 +27,9 @@ async def add_vote(poll_id: str, vote_data: VoteCreate, db: AsyncIOMotorDatabase
     # Check if poll is active
     if datetime.utcnow() > poll.active_until:
         raise PollClosedError("This poll is no longer accepting votes.")
+
+    # Check if the voter is legit using turnstile
+    await verify_turnstile(vote_data.turnstile_token)
 
     # Check for duplicate voter
     if vote_data.voter_fingerprint in poll.voters:
