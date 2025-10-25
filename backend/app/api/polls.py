@@ -1,6 +1,15 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status, Header, Response
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    status,
+    Header,
+    Response,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.database import get_db_dependency
@@ -21,6 +30,8 @@ from app.exceptions import (
     AlreadyVotedError,
     InvalidOptionsError,
 )
+
+from app.websocket_manager import manager
 
 router = APIRouter()
 
@@ -46,16 +57,15 @@ async def create_poll_endpoint(
     try:
         new_poll = await create_poll(poll_data, db)
         return PollCreatedResponse(
-            poll_id=new_poll.poll_id,
-            creator_key=new_poll.creator_key
+            poll_id=new_poll.poll_id, creator_key=new_poll.creator_key
         )
 
     # This catches errors explicitly raised from the creation function
     # instead of blanket returning 500 for any error.
-    except PollCreationError as e: 
+    except PollCreationError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An unexpected error occurred while creating the poll: {e}"
+            detail=f"An unexpected error occurred while creating the poll: {e}",
         )
 
 
@@ -126,7 +136,7 @@ async def cast_vote_endpoint(
     Submits a vote for a given poll.
     Performs validation, security checks, and updates vote counts.
     """
-    
+
     try:
         await add_vote(poll_id, vote_data, db)
         return VoteSuccessResponse()
@@ -141,14 +151,12 @@ async def cast_vote_endpoint(
 
 
 @router.delete(
-    "/polls/{poll_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
-    summary="Delete a poll"
+    "/polls/{poll_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Delete a poll"
 )
 async def delete_poll_endpoint(
     poll_id: str,
     creator_key: Annotated[str, Header(alias="X-Creator-Key")],
-    db: AsyncIOMotorDatabase = Depends(get_db_dependency)
+    db: AsyncIOMotorDatabase = Depends(get_db_dependency),
 ):
     """
     Deletes a poll, identified by its ID.
@@ -158,10 +166,44 @@ async def delete_poll_endpoint(
         await delete_poll(poll_id, creator_key, db)
         # On success, return a 204 response with no body
         return Response(status_code=status.HTTP_204_NO_CONTENT)
-        
+
     except PollAccessDeniedError as e:
         # Reject the attempt
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=str(e)
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.websocket("/ws/polls/{poll_id}/results")
+async def websocket_endpoint(
+    websocket: WebSocket,
+    poll_id: str,
+    creator_key: str | None = None,  # Query Parameter
+    db: AsyncIOMotorDatabase = Depends(get_db_dependency),
+):
+    """
+    WebSocket endpoint for broadcasting poll result updates.
+    For private polls, a `creator_key` query parameter must be provided.
+    """
+
+    # Check if the poll exists
+    poll = await get_poll_by_id(poll_id, db)
+    if not poll:
+        await websocket.close(
+            code=status.WS_1008_POLICY_VIOLATION, reason="Poll not found"
         )
+        return
+
+    # If poll is private, validate creator key
+    if not poll.public_results:
+        if not creator_key or creator_key != poll.creator_key:
+            await websocket.close(
+                code=status.WS_1008_POLICY_VIOLATION, reason="Authentication failed"
+            )
+            return
+
+    await manager.connect(poll_id, websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(poll_id, websocket)
+        print(f"Client disconnected from poll {poll_id}")

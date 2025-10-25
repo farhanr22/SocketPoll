@@ -1,12 +1,13 @@
 from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from app.models import VoteCreate, PollInDB
+from app.models import VoteCreate, PollInDB, PollResults
 from app.exceptions import (
     PollNotFoundError,
     PollClosedError,
     AlreadyVotedError,
     InvalidOptionsError,
 )
+from app.websocket_manager import manager
 from .poll_creation import _increment_global_stats
 from .security import verify_turnstile
 
@@ -60,5 +61,15 @@ async def add_vote(poll_id: str, vote_data: VoteCreate, db: AsyncIOMotorDatabase
 
     # Implement global stat for total votes cast
     await _increment_global_stats(db, "total_votes_cast")
+
+
+    updated_poll_doc = await db.polls.find_one({"poll_id": poll.poll_id})
+    if updated_poll_doc:
+
+        # Pass it through the PollResults model and get JSON
+        updated_results = PollResults.model_validate(updated_poll_doc)
+
+        # Broadcast the results (in JSON)
+        await manager.broadcast(poll.poll_id, updated_results.model_dump())
 
     return
