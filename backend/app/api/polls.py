@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi import APIRouter, Depends, HTTPException, status, Header, Response
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.database import get_db_dependency
@@ -12,8 +12,9 @@ from app.models import (
     VoteCreate,
     VoteSuccessResponse,
 )
-from app.services import create_poll, get_poll_by_id, add_vote
+from app.services import create_poll, get_poll_by_id, add_vote, delete_poll
 from app.exceptions import (
+    PollAccessDeniedError,
     PollCreationError,
     PollNotFoundError,
     PollClosedError,
@@ -137,3 +138,30 @@ async def cast_vote_endpoint(
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
     except InvalidOptionsError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.delete(
+    "/polls/{poll_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a poll"
+)
+async def delete_poll_endpoint(
+    poll_id: str,
+    creator_key: Annotated[str, Header(alias="X-Creator-Key")],
+    db: AsyncIOMotorDatabase = Depends(get_db_dependency)
+):
+    """
+    Deletes a poll, identified by its ID.
+    Requires a valid `X-Creator-Key` header for authorization.
+    """
+    try:
+        await delete_poll(poll_id, creator_key, db)
+        # On success, return a 204 response with no body
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+        
+    except PollAccessDeniedError as e:
+        # Reject the attempt
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=str(e)
+        )
