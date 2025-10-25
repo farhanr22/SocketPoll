@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from .database import connect_to_mongo, close_mongo_connection
+from .database import connect_to_mongo, close_mongo_connection, setup_database_indexes
 from .api import polls as polls_router
 
 # Lifespan event handler to manage startup and shutdown events
@@ -8,6 +8,7 @@ from .api import polls as polls_router
 async def lifespan(app: FastAPI):
     # Runs on startup
     await connect_to_mongo()
+    await setup_database_indexes()
     yield
     # Runs on shutdown
     await close_mongo_connection()
