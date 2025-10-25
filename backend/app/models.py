@@ -67,3 +67,15 @@ class PollInDB(BaseModel):
 
     class Config:
         populate_by_name = True  # Allows using '_id' as the field name
+
+
+class PollPublic(BaseModel):
+    """Public-facing model for a poll, can be shown to any voter."""
+    poll_id: str
+    question: str
+    options: List[Option]
+    theme: str
+
+class PollResults(PollPublic):
+    """Public details + vote counts. (inherits from PollPublic)"""
+    votes: Dict[str, int]

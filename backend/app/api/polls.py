@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, status, Header
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.database import get_db_dependency
-from app.models import PollCreate, PollCreatedResponse
-from app.services import create_poll
+from app.models import PollCreate, PollCreatedResponse, PollPublic, PollResults
+from app.services import create_poll, get_poll_by_id
 
 router = APIRouter()
 
@@ -38,3 +40,58 @@ async def create_poll_endpoint(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An unexpected error occurred while creating the poll.",
         )
+
+
+@router.get(
+    "/polls/{poll_id}",
+    response_model=PollPublic,
+    summary="Get public poll data for voting"
+)
+async def get_poll_for_voting_endpoint(
+    poll_id: str,
+    db: AsyncIOMotorDatabase = Depends(get_db_dependency)
+):
+    """
+    Fetches the public data for a poll, allowing users to vote.
+    Does not include results or other metadata.
+    """
+
+    poll = await get_poll_by_id(poll_id, db)
+    if not poll:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Poll not found."
+        )
+    return poll
+
+
+@router.get(
+    "/polls/{poll_id}/results",
+    response_model=PollResults,
+    summary="Get poll results"
+)
+async def get_poll_results_endpoint(
+    poll_id: str,
+    creator_key: Annotated[str | None, Header(alias="X-Creator-Key")] = None,
+    db: AsyncIOMotorDatabase = Depends(get_db_dependency)
+):
+    """
+    Fetches the results for a poll, including vote counts.
+    
+    If the poll's results are not set to be public, 
+    a valid `X-Creator-Key` header must be provided.
+    """
+
+    poll = await get_poll_by_id(poll_id, db)
+    if not poll:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Poll not found.")
+
+    # Check for authorization if results are not public
+    if not poll.public_results:
+        if not creator_key or creator_key != poll.creator_key:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to view these results."
+            )
+            
+    return poll 
