@@ -107,6 +107,7 @@ async def create_poll(poll_data: PollCreate, db: AsyncIOMotorDatabase) -> PollIn
         creator_key=creator_key,
         question=poll_data.question,
         options=options,
+        allow_multiple_choices=poll_data.allow_multiple_choices,
         theme=poll_data.theme,
         public_results=poll_data.public_results,
         created_at=created_at,

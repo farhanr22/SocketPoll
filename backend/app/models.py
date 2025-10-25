@@ -20,6 +20,7 @@ class PollCreate(BaseModel):
     question: str = Field(..., min_length=1, max_length=280)
     options: List[str] = Field(..., min_length=2, max_length=10)
     duration_hours: int = Field(24, gt=0)  # Poll active duration in hours
+    allow_multiple_choices: bool = False
     theme: str = "default"
     public_results: bool = True
 
@@ -55,6 +56,7 @@ class PollInDB(BaseModel):
     creator_key: str = Field(..., index=True)
     question: str
     options: List[Option]
+    allow_multiple_choices: bool
     votes: Dict[str, int] = Field(default_factory=dict)
     voters: List[str] = Field(default_factory=list)  # List of voter fingerprints
 
@@ -74,6 +76,7 @@ class PollPublic(BaseModel):
     poll_id: str
     question: str
     options: List[Option]
+    allow_multiple_choices: bool
     theme: str
 
 class PollResults(PollPublic):
