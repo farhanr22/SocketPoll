@@ -1,3 +1,6 @@
+class PollCreationError(Exception):
+    pass
+
 # A base class for all voting-related errors
 class VotingError(Exception):
     pass

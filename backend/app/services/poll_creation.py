@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.models import PollCreate, PollInDB, Option
+from .security import verify_turnstile
 
 # Word lists for 3-word human-readable IDs
 ATTR1 = [
@@ -85,7 +86,9 @@ async def _increment_global_stats(db: AsyncIOMotorDatabase, field: str):
 
 
 async def create_poll(poll_data: PollCreate, db: AsyncIOMotorDatabase) -> PollInDB:
-    """Creates a new poll, saves it, and updates global stats."""
+    """Creates a new poll, saves it, and updates global stats, after verifying Turnstile token."""
+
+    await verify_turnstile(poll_data.turnstile_token)
 
     # Generate unique identifiers for the poll
     poll_id = await _generate_human_readable_id(db)

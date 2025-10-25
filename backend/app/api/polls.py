@@ -14,6 +14,7 @@ from app.models import (
 )
 from app.services import create_poll, get_poll_by_id, add_vote
 from app.exceptions import (
+    PollCreationError,
     PollNotFoundError,
     PollClosedError,
     AlreadyVotedError,
@@ -44,14 +45,16 @@ async def create_poll_endpoint(
     try:
         new_poll = await create_poll(poll_data, db)
         return PollCreatedResponse(
-            poll_id=new_poll.poll_id, creator_key=new_poll.creator_key
+            poll_id=new_poll.poll_id,
+            creator_key=new_poll.creator_key
         )
-    except Exception as e:
-        # Return a generic error message
-        # if there's been an issue other than validation error
+
+    # This catches errors explicitly raised from the creation function
+    # instead of blanket returning 500 for any error.
+    except PollCreationError as e: 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An unexpected error occurred while creating the poll.",
+            detail=f"An unexpected error occurred while creating the poll: {e}"
         )
 
 
