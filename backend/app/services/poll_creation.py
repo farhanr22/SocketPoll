@@ -1,10 +1,13 @@
 import random
 import secrets
-from datetime import datetime, timedelta
+import logging
+from datetime import datetime, timedelta, timezone
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.models import PollCreate, PollInDB, Option
 from .security import verify_turnstile
+
+logger = logging.getLogger(__name__)
 
 # Word lists for 3-word human-readable IDs
 ATTR1 = [
@@ -22,7 +25,7 @@ ATTR1 = [
     "happy",
     "messy",
     "angry",
-    "funny"
+    "funny",
 ]
 
 ATTR2 = [
@@ -40,7 +43,7 @@ ATTR2 = [
     "purple",
     "fuzzy",
     "tired",
-    "weird"
+    "weird",
 ]
 
 THINGS = [
@@ -58,8 +61,9 @@ THINGS = [
     "banana",
     "squirrel",
     "chair",
-    "bread"
+    "bread",
 ]
+
 
 async def _generate_human_readable_id(db: AsyncIOMotorDatabase) -> str:
     """Generates a 3-word ID and ensured it's not already in use."""
@@ -95,7 +99,7 @@ async def create_poll(poll_data: PollCreate, db: AsyncIOMotorDatabase) -> PollIn
     creator_key = secrets.token_urlsafe(32)
 
     # Calculate lifecycle timestamps
-    created_at = datetime.utcnow()
+    created_at = datetime.now(timezone.utc)
     active_until = created_at + timedelta(hours=poll_data.duration_hours)
     expire_at = created_at + timedelta(days=7)  # Hardcoded 7-day lifetime
 
@@ -124,4 +128,5 @@ async def create_poll(poll_data: PollCreate, db: AsyncIOMotorDatabase) -> PollIn
     # Increment the global counter for total polls created
     await _increment_global_stats(db, "total_polls_created")
 
+    logger.info(f"New poll created with ID: {new_poll.poll_id}")
     return new_poll

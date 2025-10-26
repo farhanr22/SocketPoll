@@ -1,5 +1,9 @@
+import logging
+
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.exceptions import PollAccessDeniedError
+
+logger = logging.getLogger(__name__)
 
 
 async def delete_poll(poll_id: str, creator_key: str, db: AsyncIOMotorDatabase):
@@ -17,3 +21,5 @@ async def delete_poll(poll_id: str, creator_key: str, db: AsyncIOMotorDatabase):
     # Otherwise either Poll doesn't exist or an incorrect creator key was given
     if delete_result.deleted_count == 0:
         raise PollAccessDeniedError("Poll not found or access denied.")
+
+    logger.info(f"Poll '{poll_id}' deleted successfully by creator.")

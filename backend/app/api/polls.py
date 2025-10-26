@@ -1,4 +1,5 @@
 from typing import Annotated
+import logging
 
 from fastapi import (
     APIRouter,
@@ -32,6 +33,8 @@ from app.exceptions import (
 )
 
 from app.websocket_manager import manager
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -201,9 +204,11 @@ async def websocket_endpoint(
             return
 
     await manager.connect(poll_id, websocket)
+    logger.info(f"Client connected to WebSocket for poll '{poll_id}'")
+
     try:
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(poll_id, websocket)
-        print(f"Client disconnected from poll {poll_id}")
+        logger.info(f"Client disconnected from WebSocket for poll '{poll_id}'")

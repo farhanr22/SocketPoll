@@ -1,4 +1,6 @@
 from datetime import datetime
+import logging
+
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.models import VoteCreate, PollInDB, PollResults
 from app.exceptions import (
@@ -10,6 +12,8 @@ from app.exceptions import (
 from app.websocket_manager import manager
 from .poll_creation import _increment_global_stats
 from .security import verify_turnstile
+
+logger = logging.getLogger(__name__)
 
 
 async def add_vote(poll_id: str, vote_data: VoteCreate, db: AsyncIOMotorDatabase):
@@ -62,7 +66,6 @@ async def add_vote(poll_id: str, vote_data: VoteCreate, db: AsyncIOMotorDatabase
     # Implement global stat for total votes cast
     await _increment_global_stats(db, "total_votes_cast")
 
-
     updated_poll_doc = await db.polls.find_one({"poll_id": poll.poll_id})
     if updated_poll_doc:
 
@@ -72,4 +75,7 @@ async def add_vote(poll_id: str, vote_data: VoteCreate, db: AsyncIOMotorDatabase
         # Broadcast the results (in JSON)
         await manager.broadcast(poll.poll_id, updated_results.model_dump())
 
+    logger.info(
+        f"Vote successfully cast for poll '{poll_id}' by voter '{vote_data.voter_fingerprint[:8]}...'"
+    )
     return

@@ -1,6 +1,10 @@
+import logging
+
 import httpx
 from fastapi import HTTPException, status
 from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
@@ -32,7 +36,7 @@ async def verify_turnstile(token: str) -> bool:
     if not result.get("success"):
         # Log the error codes from Cloudflare for debugging
         error_codes = result.get("error-codes", [])
-        print(f"Turnstile verification failed with error codes: {error_codes}")
+        logger.warning(f"Turnstile verification failed with error codes: {error_codes}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid Turnstile token provided.",

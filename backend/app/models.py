@@ -54,6 +54,7 @@ class PollPublic(BaseModel):
     options: List[Option]
     allow_multiple_choices: bool
     theme: str
+    active_until: datetime
 
 
 class PollResults(PollPublic):
