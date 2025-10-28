@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -30,7 +30,9 @@ async def add_vote(poll_id: str, vote_data: VoteCreate, db: AsyncIOMotorDatabase
     poll = PollInDB.model_validate(poll_doc)
 
     # Check if poll is active
-    if datetime.utcnow() > poll.active_until:
+    active_until_aware = poll.active_until.replace(tzinfo=timezone.utc)
+    
+    if datetime.now(timezone.utc) > active_until_aware:
         raise PollClosedError("This poll is no longer accepting votes.")
 
     # Check if the voter is legit using turnstile
