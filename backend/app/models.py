@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime, timedelta
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import List, Dict
 
 # Helper Models ===
@@ -80,9 +80,14 @@ class VoteSuccessResponse(BaseModel):
 class PollInDB(BaseModel):
     """Model representing the poll document in MongoDB."""
 
+    model_config = ConfigDict(populate_by_name=True)
+
     id: str = Field(alias="_id")
-    poll_id: str = Field(..., index=True, unique=True)
-    creator_key: str = Field(..., index=True)
+
+    # "index" and "unique" are not for Pydantic validation, so they are treated separately
+    poll_id: str = Field(..., json_schema_extra={"index": True, "unique": True})
+    creator_key: str = Field(..., json_schema_extra={"index": True})
+
     question: str
     options: List[Option]
     allow_multiple_choices: bool
@@ -96,5 +101,3 @@ class PollInDB(BaseModel):
     active_until: datetime
     expire_at: datetime  # For the TTL index
 
-    class Config:
-        populate_by_name = True  # Allows using '_id' as the field name
