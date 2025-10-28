@@ -1,17 +1,59 @@
-import { Button, Container, Typography } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Box,
+  Typography,
+  Link,
+  Stack,
+} from '@mui/material';
+import PollIcon from '@mui/icons-material/Poll';
+
+import PollCreationForm from '../components/PollCreationForm';
+import MyPollsList from '../components/MyPollsList';
 
 function HomePage() {
   return (
-    <Container maxWidth="sm" sx={{ mt: 2 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Home Page
-      </Typography>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+
+      {/* Header section */}
+      <Stack direction="row" spacing={2} alignItems="center" mb={5}>
+        <PollIcon color="primary" sx={{ fontSize: 40 }} />
+        <Typography variant="h4" component="h1">
+          Quick Poll
+        </Typography>
+      </Stack>
       
-      <Button variant="contained" color="primary">
-        Test Button
-      </Button>
+      {/* Body */}
+      <Grid container spacing={4}>
+
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <PollCreationForm />
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <MyPollsList />
+        </Grid>
+
+      </Grid>
+
+      {/* Footer section */}
+      <Box component="footer" sx={{ mt: 8, py: 2, textAlign: 'center' }}>
+        <Typography variant="body2" color="text.secondary">
+          Poll App description text.
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Check out the project on{' '}
+          <Link
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </Link>
+        </Typography>
+      </Box>
     </Container>
   );
 }
 
-export default HomePage;
+export default HomePage;  
