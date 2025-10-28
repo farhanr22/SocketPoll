@@ -1,0 +1,12 @@
+.git
+.gitignore
+.vscode/
+.idea/
+
+# Backend specific
+backend/venv/
+backend/__pycache__/
+/__pycache__/
+backend/.env
+backend/tests/
+

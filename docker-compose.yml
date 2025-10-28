@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  api:
+    # Build the image from the Dockerfile in the current directory.
+    build: .
+    container_name: quick-poll-api
+
+    # Load environment vars from the .env file in ./backend
+    env_file:
+      - ./backend/.env
+
+    # Map port 8000 of container to port 8000 on host
+    ports:
+      - "8000:8000"
+      
+    # Mount the backend/app directory from your host machine into the container for hot reload
+    volumes:
+      - ./backend/app:/app/app
+
+    restart: unless-stopped
