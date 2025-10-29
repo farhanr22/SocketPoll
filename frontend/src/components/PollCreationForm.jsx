@@ -24,6 +24,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { ThemeProvider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
+import { Turnstile } from '@marsidev/react-turnstile';
 
 import PollSuccessDialog from './PollSuccessDialog';
 import Notification from './Notification';
@@ -56,6 +57,7 @@ function PollCreationForm({ onPollCreated }) {
   const [allowMultipleChoices, setAllowMultipleChoices] = useState(false);
   const [publicResults, setPublicResults] = useState(true);
   const [error, setError] = useState(null);
+  const [turnstileToken, setTurnstileToken] = useState(null);
 
   const [theme, setTheme] = useState('default');
   const mainTheme = useTheme();
@@ -90,7 +92,7 @@ function PollCreationForm({ onPollCreated }) {
       theme,
       allow_multiple_choices: allowMultipleChoices,
       public_results: publicResults,
-      turnstile_token: "placeholder_token", // Will replace later
+      turnstile_token: turnstileToken,
     };
 
     try {
@@ -140,7 +142,7 @@ function PollCreationForm({ onPollCreated }) {
 
 
           <form onSubmit={handleSubmit}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
 
               <TextField
                 placeholder="What's on your mind?"
@@ -264,13 +266,33 @@ function PollCreationForm({ onPollCreated }) {
                 />
               </Stack>
 
+              <Box sx={{
+                position: 'absolute',
+                width: 0,
+                height: 0,
+                overflow: 'hidden',
+              }}>
+                <Turnstile
+                  siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
+                  options={{ size: "invisible" }}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                />
+              </Box>
+
               <Button
+                fullWidth
                 type="submit"
                 variant="contained"
                 size="large"
-                disabled={isSubmitting}
+                loading={isSubmitting || !turnstileToken}
+                loadingPosition="start"
+                disabled={isSubmitting || !turnstileToken}
               >
-                {isSubmitting ? 'Creating...' : 'Create Poll'}
+                {
+                  !turnstileToken ? 'Getting Ready...' :
+                    isSubmitting ? 'Creating...' :
+                      'Create Poll'
+                }
               </Button>
             </Box>
           </form>
