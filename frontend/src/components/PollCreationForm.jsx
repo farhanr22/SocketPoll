@@ -26,6 +26,7 @@ import { useTheme } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
 
 import PollSuccessDialog from './PollSuccessDialog';
+import Notification from './Notification';
 import { createPoll } from '../services/api';
 import { themeOptions, getPollThemes } from '../themes/pollThemes';
 
@@ -54,6 +55,7 @@ function PollCreationForm({ onPollCreated }) {
   const [newPollData, setNewPollData] = useState(null);
   const [allowMultipleChoices, setAllowMultipleChoices] = useState(false);
   const [publicResults, setPublicResults] = useState(true);
+  const [error, setError] = useState(null);
 
   const [theme, setTheme] = useState('default');
   const mainTheme = useTheme();
@@ -101,8 +103,19 @@ function PollCreationForm({ onPollCreated }) {
       //Remaining steps : turnstile, themes
 
     } catch (error) {
-      console.error("ERROR! Failed to create poll:", error.response?.data || error.message);
-      // Show error notification (later)
+      let errorMessage = "An unexpected error occurred. Please try again.";
+      if (error.response?.data?.detail) {
+        // FastAPI 422 error response has a 'detail' array of objects
+        if (Array.isArray(error.response.data.detail)) {
+          // Grab the message from the first error
+          errorMessage = error.response.data.detail[0].msg;
+        }
+        // Handle other cases
+        else if (typeof error.response.data.detail === 'string') {
+          errorMessage = error.response.data.detail;
+        }
+      } console.error("Failed to create poll:", errorMessage);
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -267,6 +280,12 @@ function PollCreationForm({ onPollCreated }) {
           open={showSuccessDialog}
           onClose={() => setShowSuccessDialog(false)}
           pollData={newPollData}
+        />
+        <Notification
+          open={!!error}
+          onClose={() => setError(null)}
+          message={error}
+          severity="error"
         />
       </Card >
     </ThemeProvider>
