@@ -24,6 +24,8 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 import { v4 as uuidv4 } from 'uuid';
 
+import { createPoll } from '../services/api';
+
 // Available durations users can choose from
 const durationOptions = [
   { value: 1, label: '1 Hour' },
@@ -51,6 +53,7 @@ function PollCreationForm() {
 
   const [duration, setDuration] = useState(24);
   const [theme, setTheme] = useState('default');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowMultipleChoices, setAllowMultipleChoices] = useState(false);
   const [publicResults, setPublicResults] = useState(true);
 
@@ -70,19 +73,31 @@ function PollCreationForm() {
   };
 
   // Handles the form submission and logs the poll data
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const pollData = {
+    setIsSubmitting(true);
+
+    const payload = {
       question,
       options: options.map(opt => opt.value),
-      duration,
+      duration_hours: duration,
       theme,
-      allowMultipleChoices,
-      publicResults,
+      allow_multiple_choices: allowMultipleChoices,
+      public_results: publicResults,
+      turnstile_token: "placeholder_token", // Will replace later
     };
-    console.log(pollData);
-  };
 
+    try {
+      const result = await createPoll(payload);
+      console.log("SUCCESS! Poll created:", result);
+      //Remaining steps will be done later
+    } catch (error) {
+      console.error("ERROR! Failed to create poll:", error.response?.data || error.message);
+      // Show error notification (later)
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
 
     <Card sx={{ width: '100%', p: 1.75, borderRadius: 2 }}>
@@ -215,8 +230,13 @@ function PollCreationForm() {
               />
             </Stack>
 
-            <Button type="submit" variant="contained" size="large">
-              Create Poll
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Creating...' : 'Create Poll'}
             </Button>
           </Box>
         </form>
