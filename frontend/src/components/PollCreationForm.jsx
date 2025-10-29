@@ -21,6 +21,7 @@ import { TransitionGroup } from 'react-transition-group';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import { ThemeProvider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
@@ -153,7 +154,14 @@ function PollCreationForm({ onPollCreated }) {
               />
 
               <Box>
-                <Typography variant="h6" component="h2" gutterBottom color="primary">
+                <Typography
+                  variant="h6"
+                  component="h2"
+                  gutterBottom
+                  color="primary"
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <CheckCircleOutlineRoundedIcon sx={{ mr: 0.75 }} />
                   Options
                 </Typography>
 
