@@ -24,6 +24,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 import { v4 as uuidv4 } from 'uuid';
 
+import PollSuccessDialog from './PollSuccessDialog';
 import { createPoll } from '../services/api';
 
 // Available durations users can choose from
@@ -54,6 +55,8 @@ function PollCreationForm({ onPollCreated }) {
   const [duration, setDuration] = useState(24);
   const [theme, setTheme] = useState('default');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [newPollData, setNewPollData] = useState(null);
   const [allowMultipleChoices, setAllowMultipleChoices] = useState(false);
   const [publicResults, setPublicResults] = useState(true);
 
@@ -91,7 +94,10 @@ function PollCreationForm({ onPollCreated }) {
       const result = await createPoll(payload);
       console.log("SUCCESS! Poll created:", result);
       onPollCreated(result);
-      //Remaining steps : modal, turnstile, themes
+
+      setNewPollData(result);
+      setShowSuccessDialog(true);
+      //Remaining steps : turnstile, themes
 
     } catch (error) {
       console.error("ERROR! Failed to create poll:", error.response?.data || error.message);
@@ -243,6 +249,12 @@ function PollCreationForm({ onPollCreated }) {
           </Box>
         </form>
       </CardContent>
+
+      <PollSuccessDialog
+        open={showSuccessDialog}
+        onClose={() => setShowSuccessDialog(false)}
+        pollData={newPollData}
+      />
     </Card >
   );
 }
