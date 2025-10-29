@@ -42,7 +42,7 @@ const themeOptions = [
   { value: 'retro', label: 'Retro' },
 ];
 
-function PollCreationForm() {
+function PollCreationForm({ onPollCreated }) {
   const [question, setQuestion] = useState('');
 
   // The options are stored as an array of objects, each with a unique ID
@@ -90,7 +90,9 @@ function PollCreationForm() {
     try {
       const result = await createPoll(payload);
       console.log("SUCCESS! Poll created:", result);
-      //Remaining steps will be done later
+      onPollCreated(result);
+      //Remaining steps : modal, turnstile, themes
+
     } catch (error) {
       console.error("ERROR! Failed to create poll:", error.response?.data || error.message);
       // Show error notification (later)
