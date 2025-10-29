@@ -22,11 +22,20 @@ function HomePage() {
           Quick Poll
         </Typography>
       </Stack>
-      
+
       {/* Body */}
       <Grid container spacing={4}>
 
         <Grid size={{ xs: 12, sm: 6 }}>
+          <Typography
+            variant="h4_5"
+            component="h2"
+            gutterBottom
+            sx={{ display: 'flex', alignItems: 'center' }} 
+          >
+            Create a Poll.
+          </Typography>
+
           <PollCreationForm />
         </Grid>
 
