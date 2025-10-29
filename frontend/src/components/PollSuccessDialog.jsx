@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {QRCodeSVG} from 'qrcode.react';
+import { useTheme } from '@mui/material/styles';
 
 // This component receives three props:
 // `open`: a boolean to control if the dialog is visible
@@ -22,6 +23,8 @@ function PollSuccessDialog({ open, onClose, pollData }) {
   if (!pollData) {
     return null;
   }
+
+  const theme = useTheme();
 
   // Construct the full shareable URL for the voting page
   const voteUrl = `${window.location.origin}/p/${pollData.poll_id}`;
@@ -39,7 +42,7 @@ function PollSuccessDialog({ open, onClose, pollData }) {
         <Stack spacing={3} alignItems="center">
 
           <Box sx={{ p: 1.5, pb:0.8, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-              <QRCodeSVG value={voteUrl} />
+              <QRCodeSVG value={voteUrl}  fgColor={theme.palette.primary.main}/>
           </Box>
 
           <Box sx={{ width: '100%' }}>

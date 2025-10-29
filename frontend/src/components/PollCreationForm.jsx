@@ -21,11 +21,13 @@ import { TransitionGroup } from 'react-transition-group';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-
+import { ThemeProvider } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
 
 import PollSuccessDialog from './PollSuccessDialog';
 import { createPoll } from '../services/api';
+import { themeOptions, getPollThemes } from '../themes/pollThemes';
 
 // Available durations users can choose from
 const durationOptions = [
@@ -36,12 +38,6 @@ const durationOptions = [
   { value: 168, label: '7 Days' },
 ];
 
-// Available themes for the poll appearance
-const themeOptions = [
-  { value: 'default', label: 'Default' },
-  { value: 'corporate', label: 'Corporate' },
-  { value: 'retro', label: 'Retro' },
-];
 
 function PollCreationForm({ onPollCreated }) {
   const [question, setQuestion] = useState('');
@@ -53,12 +49,17 @@ function PollCreationForm({ onPollCreated }) {
   ]);
 
   const [duration, setDuration] = useState(24);
-  const [theme, setTheme] = useState('default');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [newPollData, setNewPollData] = useState(null);
   const [allowMultipleChoices, setAllowMultipleChoices] = useState(false);
   const [publicResults, setPublicResults] = useState(true);
+
+  const [theme, setTheme] = useState('default');
+  const mainTheme = useTheme();
+  const pollThemes = getPollThemes(mainTheme);
+
+
 
   // Handles updates when the text for an option changes
   const handleOptionChange = (id, value) => {
@@ -107,155 +108,168 @@ function PollCreationForm({ onPollCreated }) {
     }
   };
   return (
+    <ThemeProvider theme={pollThemes[theme]}>
+      <Card sx={{ width: '100%', p: 1.75, borderRadius: 2 }}>
+        <CardContent sx={{
+          p: { xs: 0.6, sm: 1.7 },
+          pt: { xs: 0.4, sm: 0.9 },
+        }}>
+          <Typography
+            variant="h6"
+            component="h2"
+            gutterBottom
+            color="primary"
+            sx={{ display: 'flex', alignItems: 'center' }}
+          >
+            <HelpOutlineIcon sx={{ mr: 0.75 }} />
+            Poll Question
+          </Typography>
 
-    <Card sx={{ width: '100%', p: 1.75, borderRadius: 2 }}>
-      <CardContent sx={{
-        p: { xs: 0.6, sm: 1.7 },
-        pt: { xs: 0.4, sm: 0.9 },
-      }}>
-        <Typography
-          variant="h6"
-          component="h2"
-          gutterBottom
-          color="primary"
-          sx={{ display: 'flex', alignItems: 'center' }}
-        >
-          <HelpOutlineIcon sx={{ mr: 0.75 }} />
-          Poll Question
-        </Typography>
 
+          <form onSubmit={handleSubmit}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 
-        <form onSubmit={handleSubmit}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                placeholder="What's on your mind?"
+                fullWidth
+                required
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+              />
 
-            <TextField
-              placeholder="What's on your mind?"
-              fullWidth
-              required
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-            />
+              <Box>
+                <Typography variant="h6" component="h2" gutterBottom color="primary">
+                  Options
+                </Typography>
 
-            <Box>
-              <Typography variant="h6" component="h2" gutterBottom color="primary">
-                Options
-              </Typography>
+                <TransitionGroup>
+                  {options.map((option) => (
+                    <Collapse key={option.id}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          mb: 1.5,
+                        }}
+                      >
+                        <TextField
+                          placeholder="Option"
+                          fullWidth
+                          required
+                          value={option.value}
+                          onChange={(e) =>
+                            handleOptionChange(option.id, e.target.value)
+                          }
+                        />
 
-              <TransitionGroup>
-                {options.map((option) => (
-                  <Collapse key={option.id}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                        mb: 1.5,
-                      }}
-                    >
-                      <TextField
-                        placeholder="Option"
-                        fullWidth
-                        required
-                        value={option.value}
-                        onChange={(e) =>
-                          handleOptionChange(option.id, e.target.value)
-                        }
-                      />
+                        <Collapse in={options.length > 2} orientation="horizontal">
+                          <IconButton onClick={() => handleRemoveOption(option.id)}>
+                            <RemoveCircleOutlineIcon />
+                          </IconButton>
+                        </Collapse>
+                      </Box>
+                    </Collapse>
+                  ))}
+                </TransitionGroup>
 
-                      <Collapse in={options.length > 2} orientation="horizontal">
-                        <IconButton onClick={() => handleRemoveOption(option.id)}>
-                          <RemoveCircleOutlineIcon />
-                        </IconButton>
-                      </Collapse>
-                    </Box>
-                  </Collapse>
-                ))}
-              </TransitionGroup>
+                <Button
+                  startIcon={<AddCircleOutlineIcon />}
+                  onClick={handleAddOption}
+                  variant="outlined"
+                >
+                  Add Option
+                </Button>
+              </Box>
+
+              <Divider sx={{ my: 1 }} />
+
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Voting Duration</InputLabel>
+                  <Select
+                    value={duration}
+                    label="Voting Duration"
+                    onChange={(e) => setDuration(e.target.value)}
+                  >
+                    {durationOptions.map((o) => (
+                      <MenuItem key={o.value} value={o.value}>
+                        {o.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl fullWidth>
+                  <InputLabel>Theme</InputLabel>
+                  <Select
+                    value={theme}
+                    label="Theme"
+                    onChange={(e) => setTheme(e.target.value)}
+                  >
+                    {themeOptions.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value} >
+                        <Stack direction="row" alignItems="center" spacing={1.5}>
+                          <Box
+                            sx={{
+                              width: 20,
+                              height: 20,
+                              borderRadius: '50%',
+                              backgroundColor: opt.color,
+                              border: '1px solid #ccc',
+                              flexShrink: 0,
+                            }}
+                          />
+                          <Typography>{opt.label}</Typography>
+                        </Stack>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+
+              <Stack direction="column" spacing={-1} sx={{ mt: 0 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={allowMultipleChoices}
+                      onChange={(e) => setAllowMultipleChoices(e.target.checked)}
+                      sx={{ pl: 0 }}
+                    />
+                  }
+                  label="Allow multiple choices"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={publicResults}
+                      onChange={(e) => setPublicResults(e.target.checked)}
+                      sx={{ pl: 0 }}
+                    />
+                  }
+                  label="Results are public"
+                />
+              </Stack>
 
               <Button
-                startIcon={<AddCircleOutlineIcon />}
-                onClick={handleAddOption}
-                variant="outlined"
+                type="submit"
+                variant="contained"
+                size="large"
+                disabled={isSubmitting}
               >
-                Add Option
+                {isSubmitting ? 'Creating...' : 'Create Poll'}
               </Button>
             </Box>
+          </form>
+        </CardContent>
 
-            <Divider sx={{ my: 1 }} />
-
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <FormControl fullWidth>
-                <InputLabel>Voting Duration</InputLabel>
-                <Select
-                  value={duration}
-                  label="Voting Duration"
-                  onChange={(e) => setDuration(e.target.value)}
-                >
-                  {durationOptions.map((o) => (
-                    <MenuItem key={o.value} value={o.value}>
-                      {o.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <FormControl fullWidth>
-                <InputLabel>Theme</InputLabel>
-                <Select
-                  value={theme}
-                  label="Theme"
-                  onChange={(e) => setTheme(e.target.value)}
-                >
-                  {themeOptions.map((o) => (
-                    <MenuItem key={o.value} value={o.value}>
-                      {o.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-
-            <Stack direction="column" spacing={-1} sx={{ mt: 0 }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={allowMultipleChoices}
-                    onChange={(e) => setAllowMultipleChoices(e.target.checked)}
-                    sx={{ pl: 0 }}
-                  />
-                }
-                label="Allow multiple choices"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={publicResults}
-                    onChange={(e) => setPublicResults(e.target.checked)}
-                    sx={{ pl: 0 }}
-                  />
-                }
-                label="Results are public"
-              />
-            </Stack>
-
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Creating...' : 'Create Poll'}
-            </Button>
-          </Box>
-        </form>
-      </CardContent>
-
-      <PollSuccessDialog
-        open={showSuccessDialog}
-        onClose={() => setShowSuccessDialog(false)}
-        pollData={newPollData}
-      />
-    </Card >
+        <PollSuccessDialog
+          open={showSuccessDialog}
+          onClose={() => setShowSuccessDialog(false)}
+          pollData={newPollData}
+        />
+      </Card >
+    </ThemeProvider>
   );
 }
 
