@@ -36,7 +36,7 @@ function PollSuccessDialog({ open, onClose, pollData }) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>Poll Created Successfully!</DialogTitle>
+      <DialogTitle>Poll Created!</DialogTitle>
 
       <DialogContent sx={{ pb: 1.5 }}>
         <Stack spacing={2} alignItems="center">
