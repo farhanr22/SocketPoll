@@ -44,6 +44,9 @@ class PollCreatedResponse(BaseModel):
 
     poll_id: str
     creator_key: str
+    question: str
+    active_until: datetime
+    expire_at: datetime
 
 
 class PollPublic(BaseModel):
@@ -62,15 +65,20 @@ class PollResults(PollPublic):
 
     votes: Dict[str, int]
 
+
 class VoteCreate(BaseModel):
     """Model for a vote submission."""
 
-    option_ids: List[str] = Field(..., min_length=1, max_length=10) # Max 10 choices per vote
-    turnstile_token: str = Field(..., max_length=1024) 
+    option_ids: List[str] = Field(
+        ..., min_length=1, max_length=10
+    )  # Max 10 choices per vote
+    turnstile_token: str = Field(..., max_length=1024)
     voter_fingerprint: str = Field(..., min_length=32, max_length=32)
+
 
 class VoteSuccessResponse(BaseModel):
     """Response for a successful vote."""
+
     message: str = "Vote cast successfully."
 
 
@@ -100,4 +108,3 @@ class PollInDB(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     active_until: datetime
     expire_at: datetime  # For the TTL index
-

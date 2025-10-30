@@ -60,7 +60,11 @@ async def create_poll_endpoint(
     try:
         new_poll = await create_poll(poll_data, db)
         return PollCreatedResponse(
-            poll_id=new_poll.poll_id, creator_key=new_poll.creator_key
+            poll_id=new_poll.poll_id,
+            creator_key=new_poll.creator_key,
+            question=new_poll.question,
+            active_until=new_poll.active_until,
+            expire_at=new_poll.expire_at,
         )
 
     # This catches errors explicitly raised from the creation function
