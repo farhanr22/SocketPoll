@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -60,6 +60,7 @@ function PollCreationForm({ onPollCreated }) {
   const [publicResults, setPublicResults] = useState(true);
   const [error, setError] = useState(null);
   const [turnstileToken, setTurnstileToken] = useState(null);
+  const turnstileRef = useRef(null);
 
   const [theme, setTheme] = useState('default');
   const mainTheme = useTheme();
@@ -104,7 +105,9 @@ function PollCreationForm({ onPollCreated }) {
 
       setNewPollData(result);
       setShowSuccessDialog(true);
-      //Remaining steps : turnstile, themes
+      // Reset Turnstile so that user can re-submit
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
 
     } catch (error) {
       let errorMessage = "An unexpected error occurred. Please try again.";
@@ -291,9 +294,12 @@ function PollCreationForm({ onPollCreated }) {
                 overflow: 'hidden',
               }}>
                 <Turnstile
+                  ref={turnstileRef}
                   siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
                   options={{ size: "invisible" }}
                   onSuccess={(token) => setTurnstileToken(token)}
+                  onExpire={() => setTurnstileToken(null)}
+                  onError={() => setTurnstileToken(null)}
                 />
               </Box>
 
