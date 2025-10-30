@@ -29,11 +29,20 @@ const defaultTheme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: 'none',               
+          boxShadow: 'none',
           border: '1px solid rgba(0, 0, 0, 0.15)',
           backgroundColor: '#fff',
           '&:last-child': {
-            paddingBottom: 3, 
+            paddingBottom: 2,
+          },
+        },
+      },
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          '&:last-child': {
+            paddingBottom: 20,
           },
         },
       },
@@ -41,7 +50,7 @@ const defaultTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         notchedOutline: {
-          borderWidth: 1, 
+          borderWidth: 1,
         },
         root: ({ theme }) => ({
           '& .MuiOutlinedInput-input': {
