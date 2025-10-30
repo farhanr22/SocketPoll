@@ -13,6 +13,9 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { QRCodeSVG } from 'qrcode.react';
 import { useTheme } from '@mui/material/styles';
+import { useState } from 'react';
+
+import Notification from './Notification';
 
 // This component receives three props:
 // `open`: a boolean to control if the dialog is visible
@@ -24,6 +27,7 @@ function PollSuccessDialog({ open, onClose, pollData }) {
     return null;
   }
 
+  const [showCopied, setShowCopied] = useState(false);
   const theme = useTheme();
 
   // Construct the full shareable URL for the voting page
@@ -31,7 +35,7 @@ function PollSuccessDialog({ open, onClose, pollData }) {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(voteUrl);
-    // Maybe add "copied!" notification later?
+    setShowCopied(true);
   };
 
   return (
@@ -74,6 +78,13 @@ function PollSuccessDialog({ open, onClose, pollData }) {
           Vote In Poll
         </Button>
       </DialogActions>
+      <Notification
+        open={showCopied}
+        onClose={() => setShowCopied(false)}
+        message="Link copied to clipboard!"
+        severity="success"
+      />
+
     </Dialog>
   );
 }

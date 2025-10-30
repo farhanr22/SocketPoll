@@ -7,8 +7,19 @@ import { Snackbar, Alert } from '@mui/material';
 // `severity`: 'error', 'warning', 'info', or 'success'
 function Notification({ open, onClose, message, severity = 'info' }) {
   return (
-    <Snackbar open={open} autoHideDuration={5000} onClose={onClose}>
-      <Alert onClose={onClose} severity={severity} sx={{ width: '100%' }}>
+    <Snackbar
+      open={open}
+      autoHideDuration={5000}
+      onClose={onClose}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "center",
+      }}
+    >
+      <Alert
+        onClose={onClose} 
+        severity={severity}
+        sx={{ width: '100%' }}>
         {message}
       </Alert>
     </Snackbar>
