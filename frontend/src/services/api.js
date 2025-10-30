@@ -8,7 +8,7 @@ const apiClient = axios.create({
 /**
  * Creates a new poll by sending data to the backend API.
  * @param {object} pollData - The data for the new poll.
- * @returns {Promise<object>} The created poll data (poll_id, creator_key).
+ * @returns {Promise<object>} The created poll data (poll_id, creator_key, question, active_until, expire_at).
  */
 export const createPoll = async (pollData) => {
   try {

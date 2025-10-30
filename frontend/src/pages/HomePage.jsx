@@ -9,7 +9,7 @@ import {
 import PollIcon from '@mui/icons-material/Poll';
 import { useState, useEffect } from 'react';
 
-import { getMyPolls, savePoll } from '../utils/storage';
+import { getMyPolls, savePoll, removePoll } from '../utils/storage';
 
 import PollCreationForm from '../components/PollCreationForm';
 import MyPollsList from '../components/MyPollsList';
@@ -30,6 +30,11 @@ function HomePage() {
     setMyPolls(updatedPolls);
   };
 
+  // For removing expired poll entries
+  const handlePollRemoved = (pollId) => {
+    const updatedPolls = removePoll(pollId);
+    setMyPolls(updatedPolls);
+  };
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -68,7 +73,7 @@ function HomePage() {
             Your polls.
           </Typography>
 
-          <MyPollsList polls={myPolls} />
+          <MyPollsList polls={myPolls} onRemovePoll={handlePollRemoved} />
         </Grid>
 
       </Grid>
