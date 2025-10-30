@@ -22,6 +22,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { ThemeProvider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
@@ -214,6 +215,15 @@ function PollCreationForm({ onPollCreated }) {
                     value={duration}
                     label="Voting Duration"
                     onChange={(e) => setDuration(e.target.value)}
+                    renderValue={(selected) => {
+                      const selectedOption = durationOptions.find((o) => o.value === selected);
+                      return (
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <AccessTimeIcon color="primary" />
+                          {selectedOption?.label}
+                        </Box>
+                      );
+                    }}
                   >
                     {durationOptions.map((o) => (
                       <MenuItem key={o.value} value={o.value}>
@@ -235,8 +245,8 @@ function PollCreationForm({ onPollCreated }) {
                         <Stack direction="row" alignItems="center" spacing={1.5}>
                           <Box
                             sx={{
-                              width: 20,
-                              height: 20,
+                              width: 17.5,
+                              height: 17.5,
                               borderRadius: '50%',
                               backgroundColor: opt.color,
                               border: '1px solid #ccc',
