@@ -11,7 +11,7 @@ import {
   Stack,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import {QRCodeSVG} from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { useTheme } from '@mui/material/styles';
 
 // This component receives three props:
@@ -38,11 +38,11 @@ function PollSuccessDialog({ open, onClose, pollData }) {
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle>Poll Created Successfully!</DialogTitle>
 
-      <DialogContent>
-        <Stack spacing={3} alignItems="center">
+      <DialogContent sx={{ pb: 1.5 }}>
+        <Stack spacing={2} alignItems="center">
 
-          <Box sx={{ p: 1.5, pb:0.8, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-              <QRCodeSVG value={voteUrl}  fgColor={theme.palette.primary.main}/>
+          <Box sx={{ p: 1.5, pb: 0.8, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+            <QRCodeSVG value={voteUrl} fgColor={theme.palette.primary.main} />
           </Box>
 
           <Box sx={{ width: '100%' }}>
@@ -55,7 +55,9 @@ function PollSuccessDialog({ open, onClose, pollData }) {
                 variant="outlined"
                 size="small"
               />
-              <IconButton onClick={handleCopy} aria-label="Copy link">
+              <IconButton onClick={handleCopy} aria-label="Copy link"
+                sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}
+              >
                 <ContentCopyIcon />
               </IconButton>
             </Stack>
