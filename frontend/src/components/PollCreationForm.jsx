@@ -313,7 +313,7 @@ function PollCreationForm({ onPollCreated }) {
                 disabled={isSubmitting || !turnstileToken}
               >
                 {
-                  !turnstileToken ? 'Getting Ready...' :
+                  !turnstileToken ? 'Running Captcha...' :
                     isSubmitting ? 'Creating...' :
                       'Create Poll'
                 }
