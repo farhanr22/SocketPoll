@@ -207,7 +207,7 @@ function PollCreationForm({ onPollCreated }) {
 
               <Divider sx={{ my: 1 }} />
 
-              <Box sx={{ display: 'flex', gap: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', sm: 'row' }, }}>
                 <FormControl fullWidth>
                   <InputLabel>Voting Duration</InputLabel>
                   <Select
