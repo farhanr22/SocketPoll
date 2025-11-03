@@ -19,3 +19,21 @@ export const createPoll = async (pollData) => {
     throw error;
   }
 };
+
+/**
+ * Deletes a poll from the backend.
+ * @param {string} pollId - The ID of the poll to delete.
+ * @param {string} creatorKey - The secret key for the poll.
+ * @returns {Promise<void>}
+ */
+export const deletePoll = async (pollId, creatorKey) => {
+  try {
+    await apiClient.delete(`/polls/${pollId}`, {
+      headers: {
+        'X-Creator-Key': creatorKey,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+};

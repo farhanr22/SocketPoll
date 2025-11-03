@@ -12,8 +12,11 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 import ShareDialog from './ShareDialog';
+import { deletePoll } from '../services/api';
+import ConfirmDeleteDialog from './ConfirmDeleteDialog';
+import Notification from './Notification';
 
-function PollListItem({ poll, onRemovePoll }) {
+function PollListItem({ poll, onRemovePoll, showNotification }) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -22,10 +25,26 @@ function PollListItem({ poll, onRemovePoll }) {
   const handleMenuClose = () => setAnchorEl(null);
 
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const now = new Date();
   const isVotingActive = now < new Date(poll.active_until);
   const isPollExpired = now > new Date(poll.expire_at);
+
+  const handleDeleteConfirm = async () => {
+    setIsConfirmOpen(false);
+    try {
+      await deletePoll(poll.poll_id, poll.creator_key);
+      onRemovePoll(poll.poll_id);
+      // Show success notification
+      showNotification('Poll successfully deleted.', 'success');
+    } catch (error) {
+      console.error("Failed to delete poll", error);
+      const errorMessage = error.response?.data?.detail || "Failed to delete poll. The server may be down.";
+      // Show error notification
+      showNotification(errorMessage, 'error');
+    }
+  };
 
   if (isPollExpired) {
     return (
@@ -131,7 +150,10 @@ function PollListItem({ poll, onRemovePoll }) {
                 <ShareIcon sx={{ mr: 1, fontSize: '1.1rem' }} /> Share
               </MenuItem>
               <MenuItem
-                onClick={() => { handleMenuClose(); onRemovePoll(poll.poll_id); }}
+                onClick={() => {
+                  handleMenuClose();
+                  setIsConfirmOpen(true);
+                }}
                 sx={{ fontSize: '0.85rem', minHeight: 32 }}
               >
                 <DeleteForeverRoundedIcon sx={{ mr: 1, fontSize: '1.1rem' }} /> Delete
@@ -155,6 +177,7 @@ function PollListItem({ poll, onRemovePoll }) {
               size='small'
               variant='outlined'
               startIcon={<DeleteForeverRoundedIcon />}
+              onClick={() => setIsConfirmOpen(true)}
             >
               Delete
             </Button>
@@ -167,12 +190,26 @@ function PollListItem({ poll, onRemovePoll }) {
         onClose={() => setIsShareDialogOpen(false)}
         pollData={poll}
       />
+      <ConfirmDeleteDialog
+        open={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleDeleteConfirm}
+      />
     </Card >
   );
 }
 
 
 function MyPollsList({ polls, onRemovePoll }) {
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
+
+  const showNotification = (message, severity = 'success') => {
+    setNotification({ open: true, message, severity });
+  };
   return (
     <Box>
       {polls.length === 0 ? (
@@ -186,10 +223,19 @@ function MyPollsList({ polls, onRemovePoll }) {
               key={poll.poll_id}
               poll={poll}
               onRemovePoll={onRemovePoll}
+              showNotification={showNotification}
             />
           ))}
         </Stack>
       )}
+
+
+      <Notification
+        open={notification.open}
+        onClose={() => setNotification({ open: false, message: '' })}
+        message={notification.message}
+        severity={notification.severity} 
+      />
     </Box>
   );
 }
