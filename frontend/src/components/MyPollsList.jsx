@@ -1,7 +1,8 @@
 import {
   Box, Typography, Card, CardContent,
-  CardActions, Button, Stack, Chip, Grid, IconButton, Menu, MenuItem
+  CardActions, Button, Stack, Chip, Grid, IconButton, Menu, MenuItem, Collapse, Fade
 } from '@mui/material';
+import { TransitionGroup } from 'react-transition-group';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -213,20 +214,26 @@ function MyPollsList({ polls, onRemovePoll }) {
   return (
     <Box>
       {polls.length === 0 ? (
-        <Typography color="text.secondary" sx={{ ps: 5 }}>
-          You haven't created any polls yet. Create one to see it here!
-        </Typography>
+        <TransitionGroup>
+          <Fade>
+            <Typography color="text.secondary" sx={{ ps: 5 }}>
+              You haven't created any polls yet. Create one to see it here!
+            </Typography>
+          </Fade>
+        </TransitionGroup>
       ) : (
-        <Stack spacing={2}>
+        <TransitionGroup component={Stack} spacing={2}>
           {polls.slice().reverse().map((poll) => (
-            <PollListItem
-              key={poll.poll_id}
-              poll={poll}
-              onRemovePoll={onRemovePoll}
-              showNotification={showNotification}
-            />
+            <Collapse key={poll.poll_id}>
+              <PollListItem
+                key={poll.poll_id}
+                poll={poll}
+                onRemovePoll={onRemovePoll}
+                showNotification={showNotification}
+              />
+            </Collapse>
           ))}
-        </Stack>
+        </TransitionGroup>
       )}
 
 
@@ -234,7 +241,7 @@ function MyPollsList({ polls, onRemovePoll }) {
         open={notification.open}
         onClose={() => setNotification({ open: false, message: '' })}
         message={notification.message}
-        severity={notification.severity} 
+        severity={notification.severity}
       />
     </Box>
   );

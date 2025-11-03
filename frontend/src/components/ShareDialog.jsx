@@ -36,7 +36,7 @@ function ShareDialog({ open, onClose, pollData }) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>Share Poll</DialogTitle>
+      <DialogTitle>Share this Poll</DialogTitle>
 
       <DialogContent sx={{ pb: 3 }}>
         <Stack spacing={2} alignItems="center">
