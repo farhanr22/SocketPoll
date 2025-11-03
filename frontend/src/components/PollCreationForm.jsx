@@ -131,8 +131,8 @@ function PollCreationForm({ onPollCreated }) {
     <ThemeProvider theme={pollThemes[theme]}>
       <Card sx={{ width: '100%', p: 1.75, borderRadius: 2 }}>
         <CardContent sx={{
-          p: { xs: 0.6, sm: 1.7 },
-          pt: { xs: 0.4, sm: 0.9 },
+          p: { xs: 0.3, sm: 1.7 },
+          pt: { xs: 0.3, sm: 0.9 },
         }}>
           <Typography
             variant="h6"

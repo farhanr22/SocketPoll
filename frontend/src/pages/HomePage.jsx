@@ -37,7 +37,7 @@ function HomePage() {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4, p: 0.8 }}>
 
       {/* Header section */}
       <Stack direction="row" spacing={2} alignItems="center" mb={5}>
@@ -63,7 +63,7 @@ function HomePage() {
           <PollCreationForm onPollCreated={handlePollCreated} />
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Typography
             variant="h4_5"
             component="h2"
