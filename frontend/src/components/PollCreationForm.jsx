@@ -264,26 +264,26 @@ function PollCreationForm({ onPollCreated }) {
                 </FormControl>
               </Box>
 
-              <Stack direction="column" spacing={-1} sx={{ mt: 0 }}>
+              <Stack direction="column" spacing={-1} sx={{ mt: 0, ml: -1.5 }}>
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={allowMultipleChoices}
                       onChange={(e) => setAllowMultipleChoices(e.target.checked)}
-                      sx={{ pl: 0 }}
                     />
                   }
                   label="Allow multiple choices"
+                  sx={{ ml: 0 }}
                 />
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={publicResults}
                       onChange={(e) => setPublicResults(e.target.checked)}
-                      sx={{ pl: 0 }}
                     />
                   }
-                  label="Results are public"
+                  label="Display results publicly"
+                  sx={{ ml: 0 }}
                 />
               </Stack>
 
