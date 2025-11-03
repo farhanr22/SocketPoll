@@ -1,6 +1,6 @@
 import {
-  Box, Typography, Card, CardContent,
-  CardActions, Button, Stack, Chip, Grid, IconButton, Menu, MenuItem, Collapse, Fade
+  Box, Typography, Card, CardContent, Collapse, Fade,
+  Button, Stack, Grid, IconButton, Menu, MenuItem,
 } from '@mui/material';
 import { TransitionGroup } from 'react-transition-group';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
@@ -49,19 +49,40 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
 
   if (isPollExpired) {
     return (
-      <Card sx={{ width: '100%', opacity: 0.7 }}>
-        <CardContent>
-          <Typography sx={{ textDecoration: 'line-through' }} nowrap>
-            {poll.question}
+      <Card sx={{ width: '100%' }}>
+        <CardContent
+          sx={{
+            px: 1.5, py: 0.9, pb: 1.2,
+            '&:last-child': {
+              paddingBottom: 1.5,
+            },
+          }}
+        >
+          <Typography
+            component="span"
+            variant="body2"
+            sx={{
+              mb: 0.7,
+              fontSize: "0.75rem", fontFamily: 'monospace', fontWeight: 500,
+              color: "primary", opacity: 0.7,
+              display: "inline-block",
+            }}
+          >
+            This poll has expired.
           </Typography>
-          <Chip label="Expired & Deleted" size="small" sx={{ mt: 1 }} />
-        </CardContent>
-        <CardActions>
-          <Button size="small" onClick={() => onRemovePoll(poll.poll_id)}>
-            Remove From List
+          <Typography sx={{ textDecoration: 'line-through', opacity: 0.85 }} nowrap>
+            {poll.question} example test
+          </Typography>
+          <Button
+            size='small' variant='outlined'
+            startIcon={<DeleteForeverRoundedIcon />}
+            onClick={() => onRemovePoll(poll.poll_id)}
+            sx={{ mt: 1.5 }}
+          >
+            Remove from List
           </Button>
-        </CardActions>
-      </Card>
+        </CardContent>
+      </Card >
     );
   }
 
