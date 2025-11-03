@@ -11,6 +11,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
+import ShareDialog from './ShareDialog';
+
 function PollListItem({ poll, onRemovePoll }) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -18,6 +20,8 @@ function PollListItem({ poll, onRemovePoll }) {
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
+
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
   const now = new Date();
   const isVotingActive = now < new Date(poll.active_until);
@@ -118,7 +122,10 @@ function PollListItem({ poll, onRemovePoll }) {
               onClose={handleMenuClose}
             >
               <MenuItem
-                onClick={() => { handleMenuClose(); }}
+                onClick={() => {
+                  handleMenuClose();
+                  setIsShareDialogOpen(true);
+                }}
                 sx={{ fontSize: '0.85rem', minHeight: 32 }}
               >
                 <ShareIcon sx={{ mr: 1, fontSize: '1.1rem' }} /> Share
@@ -138,6 +145,7 @@ function PollListItem({ poll, onRemovePoll }) {
               size='small'
               variant='outlined'
               startIcon={<ShareIcon />}
+              onClick={() => setIsShareDialogOpen(true)}
             >
               Share
             </Button>
@@ -154,6 +162,11 @@ function PollListItem({ poll, onRemovePoll }) {
 
         </Grid>
       </CardContent>
+      <ShareDialog
+        open={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        pollData={poll}
+      />
     </Card >
   );
 }
