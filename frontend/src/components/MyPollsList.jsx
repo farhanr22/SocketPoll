@@ -167,6 +167,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
                   handleMenuClose();
                   setIsShareDialogOpen(true);
                 }}
+                disabled={!isVotingActive}
                 sx={{ fontSize: '0.85rem', minHeight: 32 }}
               >
                 <ShareIcon sx={{ mr: 1, fontSize: '1.1rem' }} /> Share
@@ -190,6 +191,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
               variant='outlined'
               startIcon={<ShareIcon />}
               onClick={() => setIsShareDialogOpen(true)}
+              disabled={!isVotingActive}
             >
               Share
             </Button>
