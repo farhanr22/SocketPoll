@@ -14,6 +14,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { QRCodeSVG } from 'qrcode.react';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Notification from './Notification';
 
@@ -29,6 +30,7 @@ function PollSuccessDialog({ open, onClose, pollData }) {
 
   const [showCopied, setShowCopied] = useState(false);
   const theme = useTheme();
+  const navigate = useNavigate();
 
   // Construct the full shareable URL for the voting page
   const voteUrl = `${window.location.origin}/p/${pollData.poll_id}`;
@@ -70,11 +72,16 @@ function PollSuccessDialog({ open, onClose, pollData }) {
       </DialogContent>
 
       <DialogActions sx={{ justifyContent: 'space-between', px: 3, pb: 2 }}>
-        {/* Add router nagivation to these later */}
-        <Button onClick={onClose} variant="outlined">
+        <Button
+          onClick={() => navigate(`/r/${pollData.poll_id}`)}
+          variant="outlined"
+        >
           Results Page
         </Button>
-        <Button onClick={onClose} variant="contained">
+        <Button
+          onClick={() => navigate(`/p/${pollData.poll_id}`)}
+          variant="contained"
+        >
           Vote In Poll
         </Button>
       </DialogActions>
