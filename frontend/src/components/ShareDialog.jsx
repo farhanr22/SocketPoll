@@ -11,7 +11,7 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { QRCodeSVG } from 'qrcode.react';
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, alpha } from '@mui/material/styles';
 
 import Notification from './Notification';
 
@@ -38,7 +38,7 @@ function ShareDialog({ open, onClose, pollData }) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>Share this Poll</DialogTitle>
+      <DialogTitle  sx={{ color: "primary.main" }}>Share this Poll</DialogTitle>
 
       <DialogContent sx={{ pb: 3 }}>
         <Stack spacing={2} alignItems="center">
@@ -58,9 +58,14 @@ function ShareDialog({ open, onClose, pollData }) {
                 size="small"
               />
               <IconButton onClick={handleCopy} aria-label="Copy link"
-                sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}
+                sx={{
+                  border: '1px solid', borderColor: 'divider', borderRadius: 1,
+                  '& .MuiTouchRipple-child': {
+                    backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.55),
+                  }
+                }}
               >
-                <ContentCopyIcon />
+                <ContentCopyIcon sx={{ color: 'primary.main', opacity: 0.9 }} />
               </IconButton>
             </Stack>
           </Box>

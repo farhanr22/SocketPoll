@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { QRCodeSVG } from 'qrcode.react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, alpha } from '@mui/material/styles';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -42,7 +42,7 @@ function PollSuccessDialog({ open, onClose, pollData }) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>Poll Created!</DialogTitle>
+      <DialogTitle sx={{ color: "primary.main" }}>Poll Created !</DialogTitle>
 
       <DialogContent sx={{ pb: 1.5 }}>
         <Stack spacing={2} alignItems="center">
@@ -62,9 +62,14 @@ function PollSuccessDialog({ open, onClose, pollData }) {
                 size="small"
               />
               <IconButton onClick={handleCopy} aria-label="Copy link"
-                sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}
+                sx={{
+                  border: '1px solid', borderColor: 'divider', borderRadius: 1,
+                  '& .MuiTouchRipple-child': {
+                    backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.55),
+                  }
+                }}
               >
-                <ContentCopyIcon />
+                <ContentCopyIcon sx={{ color: 'primary.main', opacity: 0.9 }} />
               </IconButton>
             </Stack>
           </Box>

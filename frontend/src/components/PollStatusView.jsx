@@ -46,7 +46,7 @@ function PollStatusView({ status, poll, errorMessage }) {
         <Stack spacing={2.5} alignItems="stretch">
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Icon sx={{ color: 'primary.main', fontSize: '2rem' }} />
+            <Icon sx={{ color: 'primary.main', fontSize: '1.8rem' }} />
             <Typography
               variant="h5"
               component="h2"
@@ -56,7 +56,7 @@ function PollStatusView({ status, poll, errorMessage }) {
             </Typography>
           </Box>
 
-          <Typography color="text.secondary">{message}</Typography>
+          <Typography color="text.primary">{message}</Typography>
 
           {/* Buttons */}
           <Stack spacing={1.5} sx={{ pt: 1 }}>
