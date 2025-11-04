@@ -73,6 +73,20 @@ const defaultTheme = createTheme({
           textTransform: 'none',
         },
       },
+      variants: [
+        {
+          props: { variant: 'contained', color: 'primary' },
+          style: ({ theme }) => ({
+            boxShadow: `none`,
+            '&:hover': {
+              boxShadow: `0px 4px 4px 0px ${alpha(theme.palette.primary.main, 0.25)}`,
+            },
+            '&:active': {
+              boxShadow: `0px 4px 6px 0px ${alpha(theme.palette.primary.main, 0.35)}`,
+            },
+          }),
+        },
+      ],
     },
   },
 });
