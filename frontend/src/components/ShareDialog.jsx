@@ -11,6 +11,7 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { QRCodeSVG } from 'qrcode.react';
 import { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 
 import Notification from './Notification';
 
@@ -25,6 +26,7 @@ function ShareDialog({ open, onClose, pollData }) {
   }
 
   const [showCopied, setShowCopied] = useState(false);
+  const theme = useTheme();
 
   // Construct the full shareable URL for the voting page
   const voteUrl = `${window.location.origin}/p/${pollData.poll_id}`;
@@ -42,7 +44,7 @@ function ShareDialog({ open, onClose, pollData }) {
         <Stack spacing={2} alignItems="center">
 
           <Box sx={{ p: 1.5, pb: 0.8, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-            <QRCodeSVG value={voteUrl} />
+            <QRCodeSVG value={voteUrl} fgColor={theme.palette.primary.main} />
           </Box>
 
           <Box sx={{ width: '100%' }}>

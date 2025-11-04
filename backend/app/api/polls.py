@@ -92,7 +92,7 @@ async def get_poll_for_voting_endpoint(
     poll = await get_poll_by_id(poll_id, db)
     if not poll:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Poll not found."
+            status_code=status.HTTP_404_NOT_FOUND, detail="Poll not found :("
         )
     return poll
 
@@ -115,7 +115,7 @@ async def get_poll_results_endpoint(
     poll = await get_poll_by_id(poll_id, db)
     if not poll:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Poll not found."
+            status_code=status.HTTP_404_NOT_FOUND, detail="Poll not found :("
         )
 
     # Check for authorization if results are not public
@@ -195,7 +195,7 @@ async def websocket_endpoint(
     poll = await get_poll_by_id(poll_id, db)
     if not poll:
         await websocket.close(
-            code=status.WS_1008_POLICY_VIOLATION, reason="Poll not found"
+            code=status.WS_1008_POLICY_VIOLATION, reason="Poll not found :("
         )
         return
 

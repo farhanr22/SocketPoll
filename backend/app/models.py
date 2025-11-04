@@ -58,6 +58,7 @@ class PollPublic(BaseModel):
     allow_multiple_choices: bool
     theme: str
     active_until: datetime
+    public_results: bool
 
 
 class PollResults(PollPublic):

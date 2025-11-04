@@ -37,3 +37,33 @@ export const deletePoll = async (pollId, creatorKey) => {
     throw error;
   }
 };
+
+
+/**
+ * Fetches the public data for a single poll.
+ * @param {string} pollId - The ID of the poll to fetch.
+ * @returns {Promise<object>} The public poll data.
+ */
+export const getPoll = async (pollId) => {
+  try {
+    const response = await apiClient.get(`/polls/${pollId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Submits a vote for a poll.
+ * @param {string} pollId - The ID of the poll being voted on.
+ * @param {object} voteData - The payload for the vote.
+ * @returns {Promise<object>} The success response from the API.
+ */
+export const castVote = async (pollId, voteData) => {
+  try {
+    const response = await apiClient.post(`/polls/${pollId}/vote`, voteData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
