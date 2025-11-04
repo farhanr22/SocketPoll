@@ -16,8 +16,8 @@ function Header() {
       onClick={() => navigate('/')}
     >
       <Stack direction="row" spacing={1 } alignItems="center">
-        <PollIcon color="primary" sx={{ fontSize: 32 }} />
-        <Typography variant="h5" component="h1" fontWeight="bold">
+        <PollIcon color="primary" sx={{ fontSize: 38 }} />
+        <Typography variant="h4" component="h1" fontWeight="bold">
           QuickPoll
         </Typography>
       </Stack>

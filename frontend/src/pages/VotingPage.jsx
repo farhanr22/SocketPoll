@@ -6,6 +6,7 @@ import { getPoll } from '../services/api';
 import { getPollThemes } from '../themes/pollThemes';
 import defaultTheme from '../themes/defaultTheme';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import PollSkeleton from '../components/PollSkeleton';
 import PollStatusView from '../components/PollStatusView';
 import ActiveVotingForm from '../components/ActiveVotingForm';
@@ -72,6 +73,7 @@ function VotingPage() {
           <div>{renderContent()}</div>
         </Fade>
       </ThemeProvider>
+      <Footer />
     </Container>
   );
 }
