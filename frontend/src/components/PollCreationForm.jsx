@@ -22,6 +22,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
+import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { ThemeProvider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -245,17 +246,8 @@ function PollCreationForm({ onPollCreated }) {
                   >
                     {themeOptions.map((opt) => (
                       <MenuItem key={opt.value} value={opt.value} >
-                        <Stack direction="row" alignItems="center" spacing={1.5}>
-                          <Box
-                            sx={{
-                              width: 17.5,
-                              height: 17.5,
-                              borderRadius: '50%',
-                              backgroundColor: opt.color,
-                              border: '1px solid #ccc',
-                              flexShrink: 0,
-                            }}
-                          />
+                        <Stack direction="row" alignItems="center" spacing={1.2}>
+                          <CircleTwoToneIcon sx={{color:opt.color}}/>
                           <Typography>{opt.label}</Typography>
                         </Stack>
                       </MenuItem>
