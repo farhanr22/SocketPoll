@@ -9,26 +9,20 @@ import {
   Stack,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CloseIcon from '@mui/icons-material/Close';
 import { QRCodeSVG } from 'qrcode.react';
 import { useState } from 'react';
 import { useTheme, alpha } from '@mui/material/styles';
 
 import Notification from './Notification';
 
-// This component receives three props:
-// `open`: a boolean to control if the dialog is visible
-// `onClose`: a function to call when the dialog should be closed
-// `pollData`: an object with the poll data { poll_id, creator_key }
 function ShareDialog({ open, onClose, pollData }) {
-  // If there's no data, render nothing to avoid errors
   if (!pollData) {
     return null;
   }
 
   const [showCopied, setShowCopied] = useState(false);
   const theme = useTheme();
-
-  // Construct the full shareable URL for the voting page
   const voteUrl = `${window.location.origin}/p/${pollData.poll_id}`;
 
   const handleCopy = () => {
@@ -38,7 +32,21 @@ function ShareDialog({ open, onClose, pollData }) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle  sx={{ color: "primary.main" }}>Share this Poll</DialogTitle>
+      <DialogTitle
+        sx={{
+          m: 0, p: 2, pt: 1.2, pr: 1.5, pl: 2.6, color: "primary.main",
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+        }}
+      >
+        Share this Poll
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{ color: (theme) => theme.palette.grey[500], }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
 
       <DialogContent sx={{ pb: 3 }}>
         <Stack spacing={2} alignItems="center">
@@ -78,7 +86,6 @@ function ShareDialog({ open, onClose, pollData }) {
         message="Link copied to clipboard!"
         severity="success"
       />
-
     </Dialog>
   );
 }

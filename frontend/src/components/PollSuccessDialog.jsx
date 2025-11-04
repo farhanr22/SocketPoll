@@ -11,6 +11,7 @@ import {
   Stack,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CloseIcon from '@mui/icons-material/Close';
 import { QRCodeSVG } from 'qrcode.react';
 import { useTheme, alpha } from '@mui/material/styles';
 import { useState } from 'react';
@@ -42,7 +43,21 @@ function PollSuccessDialog({ open, onClose, pollData }) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ color: "primary.main" }}>Poll Created !</DialogTitle>
+      <DialogTitle
+        sx={{
+          m: 0, p: 2, pt: 1.2, pr: 1.5, pl: 2.6, color: "primary.main",
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+        }}
+      >
+        Poll Created !
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{ color: (theme) => theme.palette.grey[500], }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
 
       <DialogContent sx={{ pb: 1.5 }}>
         <Stack spacing={2} alignItems="center">
