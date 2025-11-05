@@ -102,7 +102,10 @@ function PollCreationForm({ onPollCreated }) {
     try {
       const result = await createPoll(payload);
       console.log("SUCCESS! Poll created:", result);
-      onPollCreated(result);
+      
+      // Append the chosen user theme to the result object
+      // that gets stored in localstorage
+      onPollCreated({...result, theme:theme});
 
       setNewPollData(result);
       setShowSuccessDialog(true);
