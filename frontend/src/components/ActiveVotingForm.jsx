@@ -7,6 +7,8 @@ import { TransitionGroup } from 'react-transition-group';
 import { castVote } from '../services/api';
 import PollOption from './PollOption';
 import Notification from './Notification';
+import PollIdBadge from './PollIdBadge';
+
 
 function ActiveVotingForm({ poll, onVoteSuccess }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -64,15 +66,8 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
           <Box component="form" onSubmit={handleSubmit}>
             <Stack spacing={2.2}>
               <Box>
-                
-                <Typography component="span" variant="body2"
-                  sx={{
-                    fontSize: "0.75rem", fontFamily: 'monospace', fontWeight: 500,
-                    color: "primary.main", opacity: 0.8,
-                    display: "inline-block", mb: 0.7
-                  }}>
-                  Poll ID: {poll.poll_id}
-                </Typography>
+
+                <PollIdBadge poll={poll} fontSize='0.825rem' />
 
                 <Typography
                   variant="h5" component="h2"

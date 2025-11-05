@@ -17,6 +17,7 @@ import ShareDialog from './ShareDialog';
 import { deletePoll } from '../services/api';
 import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import Notification from './Notification';
+import PollIdBadge from './PollIdBadge';
 import { getPollThemes } from '../themes/pollThemes';
 
 
@@ -34,7 +35,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
   const mainTheme = useTheme();
   const pollThemes = getPollThemes(mainTheme);
   const thisTheme = pollThemes[poll.theme ?? "default"];
-  
+
   const now = new Date();
   const isVotingActive = now < new Date(poll.active_until);
   const isPollExpired = now > new Date(poll.expire_at);
@@ -104,17 +105,9 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
             },
           }}
         >
-          <Typography
-            component="span"
-            variant="body2"
-            sx={{
-              mb: 0.7, display: "inline-block",
-              fontSize: "0.75rem", fontFamily: 'monospace', fontWeight: 500,
-              color: "primary.main", opacity: 0.8,
-            }}
-          >
-            Poll ID: {poll.poll_id}
-          </Typography>
+
+          <PollIdBadge poll={poll} fontSize='0.8rem' />
+
           <Typography
             component="p" gutterBottom
             sx={{

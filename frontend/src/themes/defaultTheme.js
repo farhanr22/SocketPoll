@@ -14,7 +14,10 @@ const defaultTheme = createTheme({
     tonalOffset: 0.1,
   },
   typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Inter", "Arial", sans-serif',
+    mono : {
+      fontFamily: '"IBM Plex Mono", monospace'
+    },
     h4_5: {
       fontWeight: 400,
       fontSize: '1.8rem',

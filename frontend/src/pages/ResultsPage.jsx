@@ -12,6 +12,7 @@ import { getPollThemes } from '../themes/pollThemes';
 import defaultTheme from '../themes/defaultTheme';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import PollIdBadge from '../components/PollIdBadge';
 import PollSkeleton from '../components/PollSkeleton';
 import ResultsErrorCard from '../components/ResultsErrorCard';
 import ResultBar from '../components/ResultBar';
@@ -130,16 +131,9 @@ function ResultsPage() {
                 <Stack spacing={0.7}>
 
                   {/* Header section */}
-                  
+
                   <Box>
-                    <Typography component="span" variant="body2"
-                      sx={{
-                        fontSize: "0.75rem", fontFamily: 'monospace', fontWeight: 500,
-                        color: "primary.main", opacity: 0.8,
-                        display: "inline-block", mb: 0.7
-                      }}>
-                      Poll ID: {poll.poll_id}
-                    </Typography>
+                    <PollIdBadge poll={poll} fontSize='0.825rem' />
 
                     <Typography
                       variant="h5" component="h2"
