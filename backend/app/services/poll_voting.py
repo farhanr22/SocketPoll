@@ -71,12 +71,13 @@ async def add_vote(poll_id: str, vote_data: VoteCreate, db: AsyncIOMotorDatabase
     updated_poll_doc = await db.polls.find_one({"poll_id": poll.poll_id})
     if updated_poll_doc:
 
-        # Pass it through the PollResults model and get JSON
-        updated_results = PollResults.model_validate(updated_poll_doc)
-
-        # Broadcast the results (in JSON)
-        await manager.broadcast(poll.poll_id, updated_results.model_dump())
-
+        # Extract only the votes field to send through WebSocket
+        new_votes = updated_poll_doc.get("votes", {})
+        message = {
+            "votes": new_votes
+        }
+        await manager.broadcast(poll.poll_id, message)
+        
     logger.info(
         f"Vote successfully cast for poll '{poll_id}' by voter '{vote_data.voter_fingerprint[:8]}...'"
     )

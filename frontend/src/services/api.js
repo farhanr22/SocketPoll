@@ -67,3 +67,20 @@ export const castVote = async (pollId, voteData) => {
     throw error;
   }
 };
+
+/**
+ * Fetches the results data for a single poll.
+ * @param {string} pollId - The ID of the poll to fetch.
+ * @param {string|null} creatorKey - The secret key, if available.
+ * @returns {Promise<object>} The poll results data.
+ */
+export const getPollResults = async (pollId, creatorKey) => {
+  try {
+    // Conditionally add the header if the key exists
+    const headers = creatorKey ? { 'X-Creator-Key': creatorKey } : {};
+    const response = await apiClient.get(`/polls/${pollId}/results`, { headers });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

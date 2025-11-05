@@ -32,9 +32,6 @@ const defaultTheme = createTheme({
           boxShadow: 'none',
           border: '1px solid rgba(0, 0, 0, 0.15)',
           backgroundColor: '#fff',
-          '&:last-child': {
-            paddingBottom: 2,
-          },
         },
       },
     },

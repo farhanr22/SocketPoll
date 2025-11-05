@@ -2,7 +2,7 @@ import { Box, Typography, Link } from '@mui/material';
 
 function Footer() {
     return (
-        <Box component="footer" sx={{ mt: 8, py: 2, textAlign: 'center' }}>
+        <Box component="footer" sx={{ mt: 5, mb:3,  py: 2, textAlign: 'center' }}>
             {/* Update text later */}
             <Typography variant="body2" color="text.secondary">
                 Poll App description text
