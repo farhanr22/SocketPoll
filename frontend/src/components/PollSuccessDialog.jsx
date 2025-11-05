@@ -12,6 +12,9 @@ import {
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CloseIcon from '@mui/icons-material/Close';
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
+import BarChartIcon from '@mui/icons-material/BarChart';
+
 import { QRCodeSVG } from 'qrcode.react';
 import { useTheme, alpha } from '@mui/material/styles';
 import { useState } from 'react';
@@ -95,12 +98,14 @@ function PollSuccessDialog({ open, onClose, pollData }) {
         <Button
           onClick={() => navigate(`/r/${pollData.poll_id}`)}
           variant="outlined"
+          startIcon={<BarChartIcon/>}
         >
           Results Page
         </Button>
         <Button
           onClick={() => navigate(`/p/${pollData.poll_id}`)}
           variant="contained"
+          startIcon={<HowToVoteIcon/>}
         >
           Vote In Poll
         </Button>
