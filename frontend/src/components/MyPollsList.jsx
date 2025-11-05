@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 import { TransitionGroup } from 'react-transition-group';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -90,9 +90,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
     <Card sx={{ width: '100%' }}>
       <CardContent
         sx={{
-          px: 1.5,
-          py: 0.9,
-          pb: 1.2,
+          px: 1.5, py: 0.9, pb: 1.2,
           '&:last-child': {
             paddingBottom: 1.5,
           },
@@ -102,37 +100,29 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
           component="span"
           variant="body2"
           sx={{
-            mb: 0.7,
-            fontSize: "0.75rem",
-            fontFamily: 'monospace',
-            fontWeight: 500,
-            color: "primary",
-            opacity: 0.7,
-            display: "inline-block"
+            mb: 0.7, display: "inline-block",
+            fontSize: "0.75rem", fontFamily: 'monospace', fontWeight: 500,
+            color: "primary", opacity: 0.7,
           }}
         >
           Poll ID: {poll.poll_id}
         </Typography>
         <Typography
-          component="p"
-          gutterBottom
+          component="p" gutterBottom
           sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           }}
         >
           {poll.question}
         </Typography>
         <Grid container
-          spacing={{ xs: 1, sm: 1.3 }}
-          mt={1.5}
-          alignItems="center">
+          spacing={{ xs: 1, sm: 1.3 }} mt={1.5}
+          alignItems="center"
+        >
 
           <Grid item>
             <Button
-              variant='contained'
-              size='small'
+              variant='contained' size='small'
               onClick={() => navigate(`/r/${poll.poll_id}`)}
               startIcon={<BarChartIcon />}
             >
@@ -142,11 +132,10 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
 
           <Grid item>
             <Button
-              size='small'
-              variant='outlined'
+              size='small' variant='outlined'
               onClick={() => navigate(`/p/${poll.poll_id}`)}
               disabled={!isVotingActive}
-              startIcon={<CheckCircleOutlineRoundedIcon />}
+              startIcon={<HowToVoteIcon />}
             >
               {isVotingActive ? "Vote" : "Voting Closed"}
             </Button>
@@ -187,8 +176,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
           {/* Desktop buttons */}
           <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
             <Button
-              size='small'
-              variant='outlined'
+              size='small' variant='outlined'
               startIcon={<ShareIcon />}
               onClick={() => setIsShareDialogOpen(true)}
               disabled={!isVotingActive}
@@ -198,8 +186,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
           </Grid>
           <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
             <Button
-              size='small'
-              variant='outlined'
+              size='small' variant='outlined'
               startIcon={<DeleteForeverRoundedIcon />}
               onClick={() => setIsConfirmOpen(true)}
             >
