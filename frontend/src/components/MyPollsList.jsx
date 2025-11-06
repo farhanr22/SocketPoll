@@ -116,6 +116,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
           >
             {poll.question}
           </Typography>
+          
           <Grid container
             spacing={{ xs: 1, sm: 1.3 }} mt={1.5}
             alignItems="center"

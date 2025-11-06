@@ -8,6 +8,7 @@ import { castVote } from '../services/api';
 import PollOption from './PollOption';
 import Notification from './Notification';
 import PollIdBadge from './PollIdBadge';
+import TimeRemaining from './TimeRemaining';
 
 
 function ActiveVotingForm({ poll, onVoteSuccess }) {
@@ -93,10 +94,22 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
                 ))}
               </TransitionGroup>
 
-              <Turnstile
-                siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
-                onSuccess={setTurnstileToken}
+              <TimeRemaining
+                activeUntil={poll.active_until}
+                prefixText="Voting closes in"
+                closedText="Voting has closed."
+                lessThanAMinuteText="Voting closes in less than a minute."
               />
+
+              <Box sx={{
+                position: 'absolute', overflow: 'hidden',
+                width: 0, height: 0,
+              }}>
+                <Turnstile
+                  siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
+                  onSuccess={setTurnstileToken}
+                />
+              </Box>
 
               <Button
                 type="submit"

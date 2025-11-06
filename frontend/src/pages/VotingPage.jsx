@@ -54,9 +54,11 @@ function VotingPage() {
 
     // STATE: Voting is over (either user has voted or poll has closed)
     const isVotingClosed = new Date() > new Date(poll.active_until);
+
     if (hasVoted) {
       return <PollStatusView status="voted" poll={poll} />;
     }
+
     if (isVotingClosed) {
       return <PollStatusView status="closed" poll={poll} />;
     }

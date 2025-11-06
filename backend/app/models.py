@@ -1,6 +1,6 @@
 import uuid
-from datetime import datetime, timedelta
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+from datetime import datetime, timedelta, timezone
+from pydantic import BaseModel, Field, field_validator, ConfigDict, field_serializer
 from typing import List, Dict
 
 # Helper Models ===
@@ -9,6 +9,13 @@ from typing import List, Dict
 class Option(BaseModel):
     id: str = Field(default_factory=lambda: uuid.uuid4().hex)
     text: str
+
+
+# datetime serializer that suffixes a 'Z' to specify that it is UTC
+def serialize_dt_z(dt: datetime, _info):
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)  # Assume UTC
+    return dt.isoformat().replace("+00:00", "Z")
 
 
 # API Models ===
@@ -48,6 +55,8 @@ class PollCreatedResponse(BaseModel):
     active_until: datetime
     expire_at: datetime
 
+    _serialize_datetimes = field_serializer("active_until", "expire_at")(serialize_dt_z)
+
 
 class PollPublic(BaseModel):
     """Public-facing model for a poll, can be shown to any voter."""
@@ -58,7 +67,10 @@ class PollPublic(BaseModel):
     allow_multiple_choices: bool
     theme: str
     active_until: datetime
+    expire_at: datetime
     public_results: bool
+
+    _serialize_datetimes = field_serializer("active_until", "expire_at")(serialize_dt_z)
 
 
 class PollResults(PollPublic):

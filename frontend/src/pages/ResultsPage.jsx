@@ -18,6 +18,7 @@ import ResultsErrorCard from '../components/ResultsErrorCard';
 import ResultBar from '../components/ResultBar';
 import ShareDialog from '../components/ShareDialog';
 import LiveIndicator from '../components/LiveIndicator';
+import TimeRemaining from '../components/TimeRemaining';
 
 
 function ResultsPage() {
@@ -174,6 +175,13 @@ function ResultsPage() {
                   <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', pt: 1 }}>
                     <strong>{totalVotes}</strong> Votes  cast.
                   </Typography>
+
+                  <TimeRemaining
+                    activeUntil={poll.expire_at}
+                    prefixText="Poll expires in"
+                    closedText="This poll has expired."
+                    lessThanAMinuteText="This poll expires in less than a minute."
+                  />
 
                   {/* Action Buttons */}
                   <Box sx={{ pt: 1.5 }}>
