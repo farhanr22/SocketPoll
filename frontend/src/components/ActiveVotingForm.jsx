@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Card, CardContent, Box, Typography, Button, Stack, Collapse, CircularProgress } from '@mui/material';
+import { TransitionGroup } from 'react-transition-group';
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
+
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import { Turnstile } from '@marsidev/react-turnstile';
-import { TransitionGroup } from 'react-transition-group';
 
 import { castVote } from '../services/api';
 import PollOption from './PollOption';
@@ -72,7 +74,7 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
 
                 <Typography
                   variant="h5" component="h2"
-                  sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
+                  sx={{ fontSize: { xs: '1.2rem', sm: '1.4rem' } }}
                 >
                   <Box component="span" sx={{ fontWeight: 'bold', color: 'primary.main', mr: 1 }}>
                     Q:
@@ -119,7 +121,7 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
                 startIcon={
                   (isSubmitting || !turnstileToken)
                     ? <CircularProgress size={20} color="inherit" />
-                    : null
+                    : <HowToVoteIcon />
                 }
               >
                 {!turnstileToken ? 'Verifying...' :

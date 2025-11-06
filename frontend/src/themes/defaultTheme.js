@@ -42,7 +42,7 @@ const defaultTheme = createTheme({
       styleOverrides: {
         root: {
           '&:last-child': {
-            paddingBottom: 20,
+            paddingBottom: 12,
           },
         },
       },
