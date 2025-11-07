@@ -26,7 +26,7 @@ class PollCreate(BaseModel):
 
     question: str = Field(..., min_length=1, max_length=280)
     options: List[str] = Field(..., min_length=2, max_length=10)
-    turnstile_token: str = Field(..., max_length=1024)
+    turnstile_token: str = Field(..., max_length=4096)
     duration_hours: int = Field(24, gt=0)  # Poll active duration in hours
     allow_multiple_choices: bool = False
     theme: str = "default"
@@ -85,7 +85,7 @@ class VoteCreate(BaseModel):
     option_ids: List[str] = Field(
         ..., min_length=1, max_length=10
     )  # Max 10 choices per vote
-    turnstile_token: str = Field(..., max_length=1024)
+    turnstile_token: str = Field(..., max_length=4096)
     voter_fingerprint: str = Field(..., min_length=32, max_length=32)
 
 
