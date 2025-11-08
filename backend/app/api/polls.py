@@ -44,6 +44,7 @@ router = APIRouter()
     response_model=PollCreatedResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create a new poll",
+    responses={500: {"description": "Internal server error during poll creation"}},
 )
 async def create_poll_endpoint(
     poll_data: PollCreate, db: AsyncIOMotorDatabase = Depends(get_db_dependency)
@@ -80,6 +81,7 @@ async def create_poll_endpoint(
     "/polls/{poll_id}",
     response_model=PollPublic,
     summary="Get public poll data for voting",
+    responses={404: {"description": "Poll with the specified ID was not found"}},
 )
 async def get_poll_for_voting_endpoint(
     poll_id: str, db: AsyncIOMotorDatabase = Depends(get_db_dependency)
@@ -98,7 +100,13 @@ async def get_poll_for_voting_endpoint(
 
 
 @router.get(
-    "/polls/{poll_id}/results", response_model=PollResults, summary="Get poll results"
+    "/polls/{poll_id}/results",
+    response_model=PollResults,
+    summary="Get poll results",
+    responses={
+        404: {"description": "Poll with the specified ID was not found"},
+        403: {"description": "Permission denied to view results for a private poll"},
+    },
 )
 async def get_poll_results_endpoint(
     poll_id: str,
@@ -133,6 +141,12 @@ async def get_poll_results_endpoint(
     "/polls/{poll_id}/vote",
     response_model=VoteSuccessResponse,
     summary="Cast a vote on a poll",
+    responses={
+        400: {"description": "Invalid options provided in the vote"},
+        403: {"description": "Voting on this poll has closed"},
+        404: {"description": "Poll with the specified ID was not found"},
+        409: {"description": "This browser has already voted on this poll"},
+    },
 )
 async def cast_vote_endpoint(
     poll_id: str,
@@ -158,7 +172,15 @@ async def cast_vote_endpoint(
 
 
 @router.delete(
-    "/polls/{poll_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Delete a poll"
+    "/polls/{poll_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a poll",
+    responses={
+        204: {"description": "Poll deleted successfully. No content returned."},
+        403: {
+            "description": "Permission denied. The provided X-Creator-Key is invalid or missing."
+        },
+    },
 )
 async def delete_poll_endpoint(
     poll_id: str,
