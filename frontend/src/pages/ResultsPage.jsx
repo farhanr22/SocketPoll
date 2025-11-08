@@ -67,7 +67,13 @@ function ResultsPage() {
       const myPolls = getMyPolls();
       const pollInfo = myPolls.find(p => p.poll_id === pollId);
       const creatorKey = pollInfo ? pollInfo.creator_key : null;
-      let wsUrl = `ws://localhost:8000/api/ws/polls/${pollId}/results`;
+
+      // create endpoint URL
+      const useSecureProtocols = import.meta.env.VITE_USE_SECURE_PROTOCOLS === 'true';
+      const base = import.meta.env.VITE_API_BASE_URL;
+      const wsProtocol = useSecureProtocols ? 'wss://' : 'ws://';
+      let wsUrl = `${wsProtocol}${base}/ws/polls/${pollId}/results`;
+
       if (!poll.public_results && creatorKey) {
         wsUrl += `?creator_key=${creatorKey}`;
       }

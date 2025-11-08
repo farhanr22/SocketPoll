@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+const useSecureProtocols = import.meta.env.VITE_USE_SECURE_PROTOCOLS === 'true';
+const httpProtocol = useSecureProtocols ? 'https://' : 'http://';
+const baseURL = httpProtocol + import.meta.env.VITE_API_BASE_URL;
 
 // Axios instance with base URL
 const apiClient = axios.create({
