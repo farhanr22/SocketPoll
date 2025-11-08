@@ -299,21 +299,14 @@ function PollCreationForm({ onPollCreated }) {
                   />
                 </Stack>
 
-                <Box sx={{
-                  position: 'absolute',
-                  width: 0,
-                  height: 0,
-                  overflow: 'hidden',
-                }}>
-                  <Turnstile
-                    ref={turnstileRef}
-                    siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
-                    options={{ size: "invisible" }}
-                    onSuccess={(token) => setTurnstileToken(token)}
-                    onExpire={() => setTurnstileToken(null)}
-                    onError={() => setTurnstileToken(null)}
-                  />
-                </Box>
+                <Turnstile
+                  ref={turnstileRef}
+                  siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
+                  options={{ size: "flexible", theme: "light" }}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  onExpire={() => setTurnstileToken(null)}
+                  onError={() => setTurnstileToken(null)}
+                />
 
                 <Button
                   fullWidth

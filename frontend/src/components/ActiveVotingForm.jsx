@@ -103,15 +103,13 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
                 lessThanAMinuteText="Voting closes in less than a minute."
               />
 
-              <Box sx={{
-                position: 'absolute', overflow: 'hidden',
-                width: 0, height: 0,
-              }}>
-                <Turnstile
-                  siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
-                  onSuccess={setTurnstileToken}
-                />
-              </Box>
+              <Turnstile
+                siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
+                options={{ size: "flexible", theme: "light" }}
+                onSuccess={(token) => setTurnstileToken(token)}
+                onExpire={() => setTurnstileToken(null)}
+                onError={() => setTurnstileToken(null)}
+              />
 
               <Button
                 type="submit"
@@ -124,7 +122,7 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
                     : <HowToVoteIcon />
                 }
               >
-                {!turnstileToken ? 'Verifying...' :
+                {!turnstileToken ? 'Running Captcha...' :
                   isSubmitting ? 'Submitting...' : 'Submit Vote'}
               </Button>
             </Stack>
