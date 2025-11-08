@@ -65,7 +65,7 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
   return (
     <>
       <Card sx={{ width: '100%' }}>
-        <CardContent sx={{ py: 2, px: { xs: 2, sm: 2.5 } }}>
+        <CardContent sx={{ pt:1.6, px: { xs: 2, sm: 2.5 }, mb:1.2 }}>
           <Box component="form" onSubmit={handleSubmit}>
             <Stack spacing={2.2}>
               <Box>

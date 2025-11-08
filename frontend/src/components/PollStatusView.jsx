@@ -42,7 +42,7 @@ function PollStatusView({ status, poll, errorMessage }) {
 
   return (
     <Card sx={{ width: '100%' }}>
-      <CardContent>
+      <CardContent sx={{mb:1.2}}>
         <Stack spacing={2.5} alignItems="stretch">
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

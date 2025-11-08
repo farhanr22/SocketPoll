@@ -8,7 +8,7 @@ function ResultsErrorCard({ message }) {
 
   return (
     <Card sx={{ width: '100%' }}>
-      <CardContent>
+      <CardContent sx={{mb:1}}>
         <Stack spacing={2.5} alignItems="stretch">
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

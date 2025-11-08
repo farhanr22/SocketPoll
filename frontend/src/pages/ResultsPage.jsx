@@ -134,7 +134,7 @@ function ResultsPage() {
         <Fade in={true} timeout={600}>
           <div>
             <Card sx={{ width: '100%' }}>
-              <CardContent sx={{ py: 2, px: { xs: 2, sm: 2.5 } }}>
+              <CardContent sx={{ pt: 1.6, px: { xs: 2, sm: 2.5 }, mb:1.3 }}>
                 <Stack spacing={0.7}>
 
                   {/* Header section */}
