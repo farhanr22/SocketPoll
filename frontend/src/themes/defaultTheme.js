@@ -15,7 +15,7 @@ const defaultTheme = createTheme({
   },
   typography: {
     fontFamily: '"Inter", "Arial", sans-serif',
-    mono : {
+    mono: {
       fontFamily: '"IBM Plex Mono", monospace'
     },
     h4_5: {
@@ -42,7 +42,7 @@ const defaultTheme = createTheme({
       styleOverrides: {
         root: {
           '&:last-child': {
-            paddingBottom: 12,
+            paddingBottom: 10,
           },
         },
       },
@@ -63,10 +63,16 @@ const defaultTheme = createTheme({
             borderWidth: 1,
             borderColor: theme.palette.primary.main,
           },
+          // Add this media query for mobile screens
+          [theme.breakpoints.down('sm')]: {
+            '& .MuiOutlinedInput-input': {
+              padding: '10px 10px', // Reduced padding for mobile
+              fontSize: '0.95rem', // Smaller font size for mobile
+            },
+          },
         }),
       },
-    },
-    MuiButton: {
+    }, MuiButton: {
       styleOverrides: {
         root: {
           borderRadius: '8px',

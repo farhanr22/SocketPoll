@@ -6,7 +6,7 @@ import {
   IconButton,
   Box,
   Typography,
-  Stack,
+  Stack, useMediaQuery
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CloseIcon from '@mui/icons-material/Close';
@@ -23,6 +23,8 @@ function ShareDialog({ open, onClose, pollData }) {
 
   const [showCopied, setShowCopied] = useState(false);
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const voteUrl = `${window.location.origin}/p/${pollData.poll_id}`;
 
   const handleCopy = () => {
@@ -34,7 +36,10 @@ function ShareDialog({ open, onClose, pollData }) {
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle
         sx={{
-          m: 0, p: 2, pt: 1.2, pr: 1.5, pl: 2.6, color: "primary.main",
+          m: 0, pb: 2, pt: 0.7,
+          px: isMobile ? 1.8 : 2,
+          pr: isMobile ? 0.3 : 1,
+          color: "primary.main",
           display: 'flex', justifyContent: 'space-between', alignItems: 'center'
         }}
       >
@@ -48,7 +53,7 @@ function ShareDialog({ open, onClose, pollData }) {
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ pb: 3 }}>
+      <DialogContent sx={{ pb: 2, px: isMobile ? 1.8 : 2 }}>
         <Stack spacing={2} alignItems="center">
 
           <Box sx={{ p: 1.5, pb: 0.8, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
@@ -60,10 +65,8 @@ function ShareDialog({ open, onClose, pollData }) {
             <Stack direction="row" spacing={1}>
               <TextField
                 value={voteUrl}
-                fullWidth
-                readOnly
-                variant="outlined"
-                size="small"
+                fullWidth readOnly
+                variant="outlined" size="small"
               />
               <IconButton onClick={handleCopy} aria-label="Copy link"
                 sx={{

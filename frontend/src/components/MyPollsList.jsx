@@ -159,7 +159,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
                     setIsShareDialogOpen(true);
                   }}
                   disabled={!isVotingActive}
-                  sx={{ fontSize: '0.85rem', minHeight: 32 }}
+                  sx={{ fontSize: '0.85rem', minHeight: 32, color:"primary.main" }}
                 >
                   <ShareIcon sx={{ mr: 1, fontSize: '1.1rem' }} /> Share
                 </MenuItem>
@@ -168,7 +168,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
                     handleMenuClose();
                     setIsConfirmOpen(true);
                   }}
-                  sx={{ fontSize: '0.85rem', minHeight: 32 }}
+                  sx={{ fontSize: '0.85rem', minHeight: 32, color:"primary.main" }}
                 >
                   <DeleteForeverRoundedIcon sx={{ mr: 1, fontSize: '1.1rem' }} /> Delete
                 </MenuItem>
