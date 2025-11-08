@@ -43,15 +43,20 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
   const handleDeleteConfirm = async () => {
     setIsConfirmOpen(false);
     try {
-      await deletePoll(poll.poll_id, poll.creator_key);
-      onRemovePoll(poll.poll_id);
-      // Show success notification
-      showNotification('Poll successfully deleted.', 'success');
-    } catch (error) {
-      console.error("Failed to delete poll", error);
-      const errorMessage = error.response?.data?.detail || "Failed to delete poll. The server may be down.";
-      // Show error notification
-      showNotification(errorMessage, 'error');
+      const result = await deletePoll(poll.poll_id, poll.creator_key);
+
+      if (result.success) {
+        // Remvoe from UI and show success notifcation
+        onRemovePoll(poll.poll_id);
+        showNotification('Poll successfully deleted.', 'success');
+
+      } else {
+        showNotification(result.error, 'error');
+      }
+    } catch (err) {
+      // For any unexpected client-side errors
+      console.error("An unexpected client-side error occurred during deletion:", err);
+      showNotification('A client-side error occurred.', 'error');
     }
   };
 
@@ -102,7 +107,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
             sx={{
               px: 1.5, py: 0.9, pb: 1.1,
               '&:last-child': {
-                paddingBottom: {xs: 1, sm: 1.4},
+                paddingBottom: { xs: 1, sm: 1.4 },
               },
             }}
           >

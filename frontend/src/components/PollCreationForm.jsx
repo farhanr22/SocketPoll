@@ -66,8 +66,7 @@ function PollCreationForm({ onPollCreated }) {
   const [theme, setTheme] = useState('default');
   const mainTheme = useTheme();
   const pollThemes = getPollThemes(mainTheme);
-
-
+  
 
   // Handles updates when the text for an option changes
   const handleOptionChange = (id, value) => {
@@ -88,6 +87,7 @@ function PollCreationForm({ onPollCreated }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
+    setError(null); // Clear previous errors
 
     const payload = {
       question,
@@ -99,38 +99,25 @@ function PollCreationForm({ onPollCreated }) {
       turnstile_token: turnstileToken,
     };
 
-    try {
-      const result = await createPoll(payload);
-      console.log("SUCCESS! Poll created:", result);
+    const result = await createPoll(payload);
 
-      // Append the chosen user theme to the result object
-      // that gets stored in localstorage
-      onPollCreated({ ...result, theme: theme });
+    if (result.success) {
+      console.log("SUCCESS! Poll created:", result.data);
 
-      setNewPollData(result);
+      // Pass the theme from the form state along with the API result
+      onPollCreated({ ...result.data, theme });
+      setNewPollData({ ...result.data, theme });
+
       setShowSuccessDialog(true);
-      // Reset Turnstile so that user can re-submit
       turnstileRef.current?.reset();
       setTurnstileToken(null);
-
-    } catch (error) {
-      let errorMessage = "An unexpected error occurred. Please try again.";
-      if (error.response?.data?.detail) {
-        // FastAPI 422 error response has a 'detail' array of objects
-        if (Array.isArray(error.response.data.detail)) {
-          // Grab the message from the first error
-          errorMessage = error.response.data.detail[0].msg;
-        }
-        // Handle other cases
-        else if (typeof error.response.data.detail === 'string') {
-          errorMessage = error.response.data.detail;
-        }
-      } console.error("Failed to create poll:", errorMessage);
-      setError(errorMessage);
-    } finally {
-      setIsSubmitting(false);
+    } else {
+      setError(result.error);
     }
+
+    setIsSubmitting(false);
   };
+
   return (
     <>
       <ThemeProvider theme={pollThemes[theme]}>

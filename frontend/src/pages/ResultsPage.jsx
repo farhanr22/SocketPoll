@@ -36,25 +36,26 @@ function ResultsPage() {
   useEffect(() => {
     const fetchResults = async () => {
       setIsLoading(true);
-      setError(null);
-      try {
-        // Use creator key from localstorage to allow admin to view (private) results
-        const myPolls = getMyPolls();
-        const pollInfo = myPolls.find(p => p.poll_id === pollId);
-        const creatorKey = pollInfo ? pollInfo.creator_key : null;
+      setError(null); // Clear previous errors
 
-        // Fetch initial results
-        const data = await getPollResults(pollId, creatorKey);
+      const myPolls = getMyPolls();
+      const pollInfo = myPolls.find(p => p.poll_id === pollId);
+      const creatorKey = pollInfo ? pollInfo.creator_key : null;
 
-        setPoll(data);
-        setVotes(data.votes);
-      } catch (err) {
-        setError(err.response?.data?.detail || 'Could not load poll results.');
-      } finally {
-        setIsLoading(false);
+      const result = await getPollResults(pollId, creatorKey);
+
+      if (result.success) {
+        setPoll(result.data);
+        setVotes(result.data.votes);
+      } else {
+        setError(result.error);
       }
+
+      setIsLoading(false);
     };
+
     fetchResults();
+
   }, [pollId]);
 
   useEffect(() => {
@@ -134,7 +135,7 @@ function ResultsPage() {
         <Fade in={true} timeout={600}>
           <div>
             <Card sx={{ width: '100%' }}>
-              <CardContent sx={{ pt: 1.6, px: { xs: 2, sm: 2.5 }, mb:1.3 }}>
+              <CardContent sx={{ pt: 1.6, px: { xs: 2, sm: 2.5 }, mb: 1.3 }}>
                 <Stack spacing={0.7}>
 
                   {/* Header section */}

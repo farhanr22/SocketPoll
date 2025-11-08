@@ -25,15 +25,17 @@ function VotingPage() {
   useEffect(() => {
     const fetchPollData = async () => {
       setIsLoading(true);
-      setError(null); // Reset error on new fetch
-      try {
-        const data = await getPoll(pollId);
-        setPoll(data);
-      } catch (err) {
-        setError(err.response?.data?.detail || 'This poll could not be found :(');
-      } finally {
-        setIsLoading(false);
+      setError(null);
+
+      const result = await getPoll(pollId);
+
+      if (result.success) {
+        setPoll(result.data);
+      } else {
+        setError(result.error);
       }
+
+      setIsLoading(false);
     };
     fetchPollData();
   }, [pollId]);

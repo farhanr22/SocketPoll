@@ -39,6 +39,7 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
     if (!turnstileToken) return;
 
     setIsSubmitting(true);
+
     try {
       const fp = await FingerprintJS.load();
       const result = await fp.get();
@@ -48,13 +49,26 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
         turnstile_token: turnstileToken,
       };
 
-      await castVote(poll.poll_id, payload);
-      localStorage.setItem(`voted_on_${poll.poll_id}`, 'true');
-      onVoteSuccess(); // Notify parent that voting is done
-    } catch (err) {
+      const voteResult = await castVote(poll.poll_id, payload);
+
+      if (voteResult.success) {
+        localStorage.setItem(`voted_on_${poll.poll_id}`, 'true');
+        onVoteSuccess(); // Notify parent that voting is done
+      } else {
+        // If voting has failed, show error notification
+        setNotification({
+          open: true,
+          message: voteResult.error,
+          severity: 'error'
+        });
+      }
+    } 
+    catch (err) {
+      // This catch block is for any unexpected client side issues.
+      console.error("An unexpected client-side error occurred:", err);
       setNotification({
         open: true,
-        message: err.response?.data?.detail || 'An unexpected error occurred.',
+        message: 'A client-side error occurred. Please refresh and try again.',
         severity: 'error'
       });
     } finally {
@@ -65,7 +79,7 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
   return (
     <>
       <Card sx={{ width: '100%' }}>
-        <CardContent sx={{ pt:1.6, px: { xs: 2, sm: 2.5 }, mb:1.2 }}>
+        <CardContent sx={{ pt: 1.6, px: { xs: 2, sm: 2.5 }, mb: 1.2 }}>
           <Box component="form" onSubmit={handleSubmit}>
             <Stack spacing={2.2}>
               <Box>
