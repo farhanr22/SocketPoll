@@ -1,10 +1,12 @@
 import { createTheme } from '@mui/material/styles';
 
 export const themeOptions = [
-    { value: 'default', label: 'Default', color: '#303030ff' },
-    { value: 'steelblue', label: 'SteelBlue', color: '#3b6182ff' },
-    { value: 'darkred', label: 'DarkRed', color: '#a03939ff' },
-    { value: 'seagreen', label: 'SeaGreen', color: '#2E8B57' },
+    { value: 'default', label: 'Default', color: '#313947' },
+    { value: 'steelblue', label: 'SteelBlue', color: '#3b6182' },
+    { value: 'darkred', label: 'DarkRed', color: '#a03939' },
+    { value: 'seagreen', label: 'SeaGreen', color: '#407858' },
+    { value: 'amber', label: 'Amber', color: '#bd7d33' },
+    { value: 'rose', label: 'Rose', color: '#c76d92' },
 ];
 
 // Helper function to create a new theme object from a given color.
@@ -26,10 +28,14 @@ const createPollTheme = (primaryColor, baseTheme) => {
     });
 };
 
-// Create a dictionary of the actual theme objects.
-export const getPollThemes = (baseTheme) => ({
-    default: createPollTheme(themeOptions[0].color, baseTheme),
-    steelblue: createPollTheme(themeOptions[1].color, baseTheme),
-    darkred: createPollTheme(themeOptions[2].color, baseTheme),
-    seagreen: createPollTheme(themeOptions[3].color, baseTheme),
-});
+/**
+ * Dynamically generate and return a map of named theme objects from the themeOptions array.
+ * @param {object} baseTheme - The base MUI theme to use for all variants.
+ * @returns {object} An object where keys are theme names (e.g., 'steelblue')
+ * and values are the complete theme objects.
+ */
+export const getPollThemes = (baseTheme) =>
+    themeOptions.reduce((acc, theme) => {
+        acc[theme.value] = createPollTheme(theme.color, baseTheme);
+        return acc;
+    }, {});

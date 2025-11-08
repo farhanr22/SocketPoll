@@ -40,8 +40,15 @@ function VotingPage() {
     fetchPollData();
   }, [pollId]);
 
-  // Determine the correct theme, fallback to default
-  const pollTheme = poll ? getPollThemes(defaultTheme)[poll.theme] : defaultTheme;
+  // Determine the correct theme if there is a poll, fallback to default
+  let pollTheme;
+
+  if (poll) {
+    const themes = getPollThemes(defaultTheme);
+    pollTheme = themes?.[poll.theme] ?? defaultTheme;
+  } else {
+    pollTheme = defaultTheme;
+  }
 
   const renderContent = () => {
     // STATE: Loading

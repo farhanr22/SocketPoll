@@ -19,6 +19,7 @@ import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import Notification from './Notification';
 import PollIdBadge from './PollIdBadge';
 import { getPollThemes } from '../themes/pollThemes';
+import defaultTheme from '../themes/defaultTheme';
 
 
 function PollListItem({ poll, onRemovePoll, showNotification }) {
@@ -34,7 +35,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
 
   const mainTheme = useTheme();
   const pollThemes = getPollThemes(mainTheme);
-  const thisTheme = pollThemes[poll.theme ?? "default"];
+  const thisTheme = pollThemes?.[poll.theme] ?? defaultTheme;
 
   const now = new Date();
   const isVotingActive = now < new Date(poll.active_until);

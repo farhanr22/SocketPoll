@@ -112,7 +112,15 @@ function ResultsPage() {
 
   }, [pollId, poll, error]);
 
-  const pollTheme = poll ? getPollThemes(defaultTheme)[poll.theme] : defaultTheme;
+  // Determine the correct theme if there is a poll, fallback to default
+  let pollTheme;
+
+  if (poll) {
+    const themes = getPollThemes(defaultTheme);
+    pollTheme = themes?.[poll.theme] ?? defaultTheme;
+  } else {
+    pollTheme = defaultTheme;
+  }
 
   const renderContent = () => {
     if (isLoading) {
