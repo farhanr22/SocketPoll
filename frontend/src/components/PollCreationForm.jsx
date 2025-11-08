@@ -66,7 +66,7 @@ function PollCreationForm({ onPollCreated }) {
   const [theme, setTheme] = useState('default');
   const mainTheme = useTheme();
   const pollThemes = getPollThemes(mainTheme);
-  
+
 
   // Handles updates when the text for an option changes
   const handleOptionChange = (id, value) => {
@@ -200,6 +200,7 @@ function PollCreationForm({ onPollCreated }) {
                     startIcon={<AddCircleOutlineIcon />}
                     onClick={handleAddOption}
                     variant="outlined"
+                    disabled={options.length >= 10}
                   >
                     Add Option
                   </Button>
