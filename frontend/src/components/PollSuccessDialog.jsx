@@ -85,10 +85,8 @@ function PollSuccessDialog({ open, onClose, pollData }) {
               <Stack direction="row" spacing={1}>
                 <TextField
                   value={voteUrl}
-                  fullWidth
-                  readOnly:true
-                  variant="outlined"
-                  size="small"
+                  fullWidth readOnly
+                  variant="outlined" size="small"
                 />
                 <IconButton onClick={handleCopy} aria-label="Copy link"
                   sx={{

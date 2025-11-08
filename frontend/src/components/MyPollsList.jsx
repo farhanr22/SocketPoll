@@ -79,13 +79,13 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
             This poll has expired.
           </Typography>
           <Typography sx={{ textDecoration: 'line-through', opacity: 0.85 }} nowrap>
-            {poll.question} example test
+            {poll.question}
           </Typography>
           <Button
             size='small' variant='outlined'
             startIcon={<DeleteForeverRoundedIcon />}
             onClick={() => onRemovePoll(poll.poll_id)}
-            sx={{ mt: 1.5 }}
+            sx={{ mt: 1.2 }}
           >
             Remove from List
           </Button>
@@ -95,121 +95,123 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
   }
 
   return (
-    <ThemeProvider theme={thisTheme}>
-      <Card sx={{ width: '100%' }}>
-        <CardContent
-          sx={{
-            px: 1.5, py: 0.9, pb: 1.2,
-            '&:last-child': {
-              paddingBottom: 1.5,
-            },
-          }}
-        >
-
-          <PollIdBadge poll={poll} fontSize='0.8rem' />
-
-          <Typography
-            component="p" gutterBottom
+    <>
+      <ThemeProvider theme={thisTheme}>
+        <Card sx={{ width: '100%' }}>
+          <CardContent
             sx={{
-              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+              px: 1.5, py: 0.9, pb: 1.1,
+              '&:last-child': {
+                paddingBottom: {xs: 1, sm: 1.4},
+              },
             }}
           >
-            {poll.question}
-          </Typography>
-          
-          <Grid container
-            spacing={{ xs: 1, sm: 1.3 }} mt={1.5}
-            alignItems="center"
-          >
 
-            <Grid item>
-              <Button
-                variant='contained' size='small'
-                onClick={() => navigate(`/r/${poll.poll_id}`)}
-                startIcon={<BarChartIcon />}
-              >
-                View Results
-              </Button>
-            </Grid>
+            <PollIdBadge poll={poll} fontSize='0.8rem' />
 
-            <Grid item>
-              <Button
-                size='small' variant='outlined'
-                onClick={() => navigate(`/p/${poll.poll_id}`)}
-                disabled={!isVotingActive}
-                startIcon={<HowToVoteIcon />}
-              >
-                {isVotingActive ? "Vote" : "Voting Closed"}
-              </Button>
-            </Grid>
+            <Typography
+              component="p" gutterBottom
+              sx={{
+                whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+              }}
+            >
+              {poll.question}
+            </Typography>
 
-            {/* Mobile menu for Share and Delete */}
-            <Grid item sx={{ display: { xs: 'block', sm: 'none' }, ml: -0.8 }}>
-              <IconButton onClick={handleMenuOpen} >
-                <MoreVertIcon sx={{ color: "primary" }} />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={isMenuOpen}
-                onClose={handleMenuClose}
-              >
-                <MenuItem
-                  onClick={() => {
-                    handleMenuClose();
-                    setIsShareDialogOpen(true);
-                  }}
+            <Grid container
+              spacing={{ xs: 1, sm: 1.3 }} mt={1}
+              alignItems="center"
+            >
+
+              <Grid item>
+                <Button
+                  variant='contained' size='small'
+                  onClick={() => navigate(`/r/${poll.poll_id}`)}
+                  startIcon={<BarChartIcon />}
+                >
+                  Results
+                </Button>
+              </Grid>
+
+              <Grid item>
+                <Button
+                  size='small' variant='outlined'
+                  onClick={() => navigate(`/p/${poll.poll_id}`)}
                   disabled={!isVotingActive}
-                  sx={{ fontSize: '0.85rem', minHeight: 32, color:"primary.main" }}
+                  startIcon={<HowToVoteIcon />}
                 >
-                  <ShareIcon sx={{ mr: 1, fontSize: '1.1rem' }} /> Share
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleMenuClose();
-                    setIsConfirmOpen(true);
-                  }}
-                  sx={{ fontSize: '0.85rem', minHeight: 32, color:"primary.main" }}
+                  {isVotingActive ? "Vote" : "Voting Closed"}
+                </Button>
+              </Grid>
+
+              {/* Mobile menu for Share and Delete */}
+              <Grid item sx={{ display: { xs: 'block', sm: 'none' }, ml: -0.8 }}>
+                <IconButton onClick={handleMenuOpen} >
+                  <MoreVertIcon sx={{ color: "primary" }} />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={isMenuOpen}
+                  onClose={handleMenuClose}
                 >
-                  <DeleteForeverRoundedIcon sx={{ mr: 1, fontSize: '1.1rem' }} /> Delete
-                </MenuItem>
-              </Menu>
-            </Grid>
+                  <MenuItem
+                    onClick={() => {
+                      handleMenuClose();
+                      setIsShareDialogOpen(true);
+                    }}
+                    disabled={!isVotingActive}
+                    sx={{ fontSize: '0.85rem', minHeight: 32, color: "primary.main" }}
+                  >
+                    <ShareIcon sx={{ mr: 1, fontSize: '1.1rem' }} /> Share
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      handleMenuClose();
+                      setIsConfirmOpen(true);
+                    }}
+                    sx={{ fontSize: '0.85rem', minHeight: 32, color: "primary.main" }}
+                  >
+                    <DeleteForeverRoundedIcon sx={{ mr: 1, fontSize: '1.1rem' }} /> Delete
+                  </MenuItem>
+                </Menu>
+              </Grid>
 
-            {/* Desktop buttons */}
-            <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
-              <Button
-                size='small' variant='outlined'
-                startIcon={<ShareIcon />}
-                onClick={() => setIsShareDialogOpen(true)}
-                disabled={!isVotingActive}
-              >
-                Share
-              </Button>
-            </Grid>
-            <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
-              <Button
-                size='small' variant='outlined'
-                startIcon={<DeleteForeverRoundedIcon />}
-                onClick={() => setIsConfirmOpen(true)}
-              >
-                Delete
-              </Button>
-            </Grid>
+              {/* Desktop buttons */}
+              <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Button
+                  size='small' variant='outlined'
+                  startIcon={<ShareIcon />}
+                  onClick={() => setIsShareDialogOpen(true)}
+                  disabled={!isVotingActive}
+                >
+                  Share
+                </Button>
+              </Grid>
+              <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Button
+                  size='small' variant='outlined'
+                  startIcon={<DeleteForeverRoundedIcon />}
+                  onClick={() => setIsConfirmOpen(true)}
+                >
+                  Delete
+                </Button>
+              </Grid>
 
-          </Grid>
-        </CardContent>
-        <ShareDialog
-          open={isShareDialogOpen}
-          onClose={() => setIsShareDialogOpen(false)}
-          pollData={poll}
-        />
-        <ConfirmDeleteDialog
-          open={isConfirmOpen}
-          onClose={() => setIsConfirmOpen(false)}
-          onConfirm={handleDeleteConfirm}
-        />
-      </Card >
-    </ThemeProvider>
+            </Grid>
+          </CardContent>
+        </Card >
+      </ThemeProvider>
+      <ShareDialog
+        open={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        pollData={poll}
+      />
+      <ConfirmDeleteDialog
+        open={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleDeleteConfirm}
+      />
+    </>
 
   );
 }

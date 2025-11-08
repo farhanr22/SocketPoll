@@ -72,11 +72,15 @@ const defaultTheme = createTheme({
           },
         }),
       },
-    }, MuiButton: {
+    },
+    MuiButton: {
       styleOverrides: {
         root: {
           borderRadius: '8px',
           textTransform: 'none',
+          '&.Mui-disabled': {
+            boxShadow: 'none',
+          },
         },
       },
       variants: [
