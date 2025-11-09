@@ -2,22 +2,30 @@ import { Box, Typography, Link } from '@mui/material';
 
 function Footer() {
     return (
-        <Box component="footer" sx={{ mt: 5, mb:3,  py: 2, textAlign: 'center' }}>
-            {/* Update text later */}
-            <Typography variant="body2" color="text.secondary">
-                Poll App description text
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-                Check out the project on{' '}
-                <Link
-                    href="https://github.com/your-repo/quickpoll" // Update later
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    GitHub
-                </Link>
-            </Typography>
+        <Box component="footer" sx={{ mt: 6, mb: 3, py: 2, textAlign: 'center' }}>
+            <Box sx={{ maxWidth: '430px', mx: 'auto' }}>
+                <Typography variant="body2" color="text.secondary">
+                    Create, share, and view real-time results from anonymous polls.
+                    
+                    {/* Line break that doesn't apply on smaller screens */}
+                    <Box sx={{ display: { xs: 'none', sm: 'block' } }} /> 
+                    {' '} Built with FastAPI, React, and WebSockets.
+
+                    {' '}
+                    <Link
+                        href="https://github.com/farhanr22/socketpoll"
+                        target="_blank" rel="noopener noreferrer"
+                    >
+                        View on GitHub
+                    </Link>
+                    .
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                    All poll data is automatically deleted after 7 days.
+                </Typography>
+            </Box>
         </Box>
+
     );
 }
 
