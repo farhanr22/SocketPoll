@@ -34,20 +34,26 @@ function HomePage() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
 
       <Stack spacing={3.5}>
-        
+
         <Header />
 
         <Grid container spacing={4}>
 
           <Grid item size={{ xs: 12, md: 6 }}>
-            <Typography variant="h5" component="h2" gutterBottom>
+            <Typography
+              variant="h5" component="h2" gutterBottom
+              sx={{ fontSize: { xs: '1.35rem', sm: '1.5rem' } }}
+            >
               Create a Poll.
             </Typography>
             <PollCreationForm onPollCreated={handlePollCreated} />
           </Grid>
-          
+
           <Grid item size={{ xs: 12, md: 6 }}>
-            <Typography variant="h5" component="h2" gutterBottom>
+            <Typography
+              variant="h5" component="h2" gutterBottom
+              sx={{ fontSize: { xs: '1.35rem', sm: '1.5rem' } }}
+            >
               Your Polls.
             </Typography>
             <MyPollsList polls={myPolls} onRemovePoll={handlePollRemoved} />
@@ -56,7 +62,7 @@ function HomePage() {
         </Grid>
 
         <Footer />
-        
+
       </Stack>
     </Container>
   );

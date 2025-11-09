@@ -238,9 +238,17 @@ function MyPollsList({ polls, onRemovePoll }) {
       {polls.length === 0 ? (
         <TransitionGroup>
           <Fade>
-            <Typography color="text.secondary" sx={{ ps: 5 }}>
-              You haven't created any polls yet. Create one to see it here!
-            </Typography>
+            <Box display="flex" flexDirection="column">
+              <Typography color="text.secondary" sx={{ ps: 5 }}>
+                You haven't created any polls yet. Create one to see it here!
+              </Typography>
+              <Box
+                component="img"
+                src="/cat.svg"
+                alt="Logo"
+                sx={{ width: "90%", maxWidth: 450, alignSelf: "center", mt: 5 }}
+              />
+            </Box>
           </Fade>
         </TransitionGroup>
       ) : (
