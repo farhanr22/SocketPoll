@@ -1,7 +1,7 @@
 // Poll object fields : poll_id, creator_key, question, active_until, expire_at
 
 // localStorage key for this app
-const POLLS_STORAGE_KEY = 'quickPoll';
+const POLLS_STORAGE_KEY = 'socketpoll_v1';
 
 /**
  * Retrieves the list of user-created polls from localStorage.
