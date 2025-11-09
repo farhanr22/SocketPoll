@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, ThemeProvider, Fade } from '@mui/material';
+import { SwitchTransition } from 'react-transition-group';
 
 import { getPoll } from '../services/api';
 import { getPollThemes } from '../themes/pollThemes';
@@ -53,36 +54,56 @@ function VotingPage() {
   const renderContent = () => {
     // STATE: Loading
     if (isLoading) {
-      return <PollSkeleton />;
+      return (
+        <Fade key="loading" in={true} timeout={100}>
+          <div><PollSkeleton /></div>
+        </Fade>
+      );
     }
 
     // STATE: Error
     if (error) {
-      return <PollStatusView status="error" errorMessage={error} />;
+      return (
+        <Fade key="error" in={true} timeout={300}>
+          <div><PollStatusView status="error" errorMessage={error} /></div>
+        </Fade>
+      );
     }
 
     // STATE: Voting is over (either user has voted or poll has closed)
     const isVotingClosed = new Date() > new Date(poll.active_until);
 
     if (hasVoted) {
-      return <PollStatusView status="voted" poll={poll} />;
+      return (
+        <Fade key="voted" in={true} timeout={300}>
+          <div><PollStatusView status="voted" poll={poll} /></div>
+        </Fade>
+      );
     }
 
     if (isVotingClosed) {
-      return <PollStatusView status="closed" poll={poll} />;
+      return (
+        <Fade key="closed" in={true} timeout={300}>
+          <div><PollStatusView status="closed" poll={poll} /></div>
+        </Fade>
+      );
     }
 
     // STATE: Active Voting Form
-    return <ActiveVotingForm poll={poll} onVoteSuccess={() => setHasVoted(true)} />;
+    return (
+      <Fade key="active" in={true} timeout={300}>
+        <div><ActiveVotingForm poll={poll} onVoteSuccess={() => setHasVoted(true)} /></div>
+      </Fade>
+    );
   };
 
   return (
     <Container maxWidth="sm">
       <Header />
       <ThemeProvider theme={pollTheme}>
-        <Fade in={true} timeout={300}>
-          <div>{renderContent()}</div>
-        </Fade>
+        <SwitchTransition mode="out-in">
+          {renderContent()}
+        </SwitchTransition>
       </ThemeProvider>
       <Footer />
     </Container>

@@ -206,7 +206,6 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
             </Grid>
           </CardContent>
         </Card >
-      </ThemeProvider>
       <ShareDialog
         open={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
@@ -217,6 +216,7 @@ function PollListItem({ poll, onRemovePoll, showNotification }) {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleDeleteConfirm}
       />
+      </ThemeProvider>
     </>
 
   );
@@ -252,9 +252,15 @@ function MyPollsList({ polls, onRemovePoll }) {
           </Fade>
         </TransitionGroup>
       ) : (
-        <TransitionGroup component={Stack} spacing={2}>
-          {polls.slice().reverse().map((poll) => (
-            <Collapse key={poll.poll_id}>
+        <TransitionGroup
+          component="div"
+          sx={{ display: 'flex', flexDirection: 'column' }}>
+
+          {polls.slice().reverse().map((poll, index) => (
+            <Collapse
+              key={poll.poll_id}
+              sx={{ mb: index < polls.length - 1 ? 2 : 0 }} // prevent last one from having mb
+            >
               <PollListItem
                 key={poll.poll_id}
                 poll={poll}

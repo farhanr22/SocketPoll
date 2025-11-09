@@ -287,15 +287,6 @@ function PollCreationForm({ onPollCreated }) {
                   />
                 </Stack>
 
-                <Turnstile
-                  ref={turnstileRef}
-                  siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
-                  options={{ size: "flexible", theme: "light" }}
-                  onSuccess={(token) => setTurnstileToken(token)}
-                  onExpire={() => setTurnstileToken(null)}
-                  onError={() => setTurnstileToken(null)}
-                />
-
                 <Button
                   fullWidth
                   type="submit"
@@ -311,6 +302,16 @@ function PollCreationForm({ onPollCreated }) {
                         'Create Poll'
                   }
                 </Button>
+
+                <Turnstile
+                  ref={turnstileRef}
+                  siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
+                  options={{ size: "flexible", theme: "light" }}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  onExpire={() => setTurnstileToken(null)}
+                  onError={() => setTurnstileToken(null)}
+                />
+
               </Box>
             </form>
           </CardContent>

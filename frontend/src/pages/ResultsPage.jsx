@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, ThemeProvider, Fade, Card, CardContent, Typography, Stack, Box, Button, Divider } from '@mui/material'
-  ;
+import {
+  Container, ThemeProvider, Fade, Card, CardContent,
+  Typography, Stack, Box, Button, Divider
+} from '@mui/material';
+import { SwitchTransition } from 'react-transition-group';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import ShareIcon from '@mui/icons-material/Share';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -124,11 +127,19 @@ function ResultsPage() {
 
   const renderContent = () => {
     if (isLoading) {
-      return <PollSkeleton />;
+      return (
+        <Fade key="loading" in={true} timeout={100}>
+          <div><PollSkeleton /></div>
+        </Fade>
+      );
     }
 
     if (error) {
-      return <ResultsErrorCard message={error} />;
+      return (
+        <Fade key="error" in={true} timeout={300}>
+          <div><ResultsErrorCard message={error} /></div>
+        </Fade>
+      );
     }
 
     const totalVotes = Object.values(votes).reduce((sum, count) => sum + count, 0);
@@ -139,107 +150,98 @@ function ResultsPage() {
     const maxVotes = totalVotes > 0 ? Math.max(...Object.values(votes)) : 0;
 
     return (
-      <>
-        <Fade in={true} timeout={600}>
-          <div>
-            <Card sx={{ width: '100%' }}>
-              <CardContent sx={{ pt: 1.6, px: { xs: 2, sm: 2.5 }, mb: 1.3 }}>
-                <Stack spacing={0.7}>
+      <Fade key="results" in={true} timeout={600}>
+          <Card sx={{ width: '100%' }}>
+            <CardContent sx={{ pt: 1.6, px: { xs: 2, sm: 2.5 }, mb: 1.3 }}>
+              <Stack spacing={0.7}>
 
-                  {/* Header section */}
+                {/* Header section */}
 
-                  <Box>
-                    <PollIdBadge poll={poll} fontSize='0.825rem' />
+                <Box>
+                  <PollIdBadge poll={poll} fontSize='0.825rem' />
 
-                    <Typography
-                      variant="h5" component="h2"
-                      sx={{ fontSize: { xs: '1.2rem', sm: '1.3rem' } }}
-                    >
-                      <Box component="span" sx={{ fontWeight: 'bold', color: 'primary.main', mr: 1 }}>
-                        Q:
-                      </Box>
-                      {poll.question}
-                    </Typography>
-                  </Box>
-
-                  {/* Results section  */}
-
-                  <Box sx={{ textAlign: 'center', pt: 0.5 }}>
-                    <Typography variant="overline" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
-                      {isLive && "Live"} Results <LiveIndicator live={isLive} size={7} />
-                    </Typography>
-                  </Box>
-
-                  <Stack spacing={1.5}>
-                    {poll.options.map(option => {
-                      const voteCount = votes[option.id] || 0;
-                      return (
-                        <ResultBar
-                          key={option.id}
-                          option={option}
-                          voteCount={voteCount}
-                          totalVotes={totalVotes}
-                          isMultiChoice={poll.allow_multiple_choices}
-                          // Don't set any option as winning if there are no votes yet
-                          isWinning={totalVotes > 0 && voteCount === maxVotes}
-                        />
-                      );
-                    })}
-                  </Stack>
-
-                  <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', pt: 1 }}>
-                    <strong>{totalVotes}</strong> Votes  cast.
+                  <Typography
+                    variant="h5" component="h2"
+                    sx={{ fontSize: { xs: '1.2rem', sm: '1.3rem' } }}
+                  >
+                    <Box component="span" sx={{ fontWeight: 'bold', color: 'primary.main', mr: 1 }}>
+                      Q:
+                    </Box>
+                    {poll.question}
                   </Typography>
+                </Box>
 
-                  <TimeRemaining
-                    activeUntil={poll.expire_at}
-                    prefixText="Poll expires in"
-                    closedText="This poll has expired."
-                    lessThanAMinuteText="This poll expires in less than a minute."
-                  />
+                {/* Results section  */}
 
-                  {/* Action Buttons */}
-                  <Box sx={{ pt: 1.5 }}>
-                    <Divider sx={{ mb: 2.5 }} />
-                    <Stack spacing={1.5}>
-                      {isVotingActive && (
-                        <>
-                          <Button
-                            variant="outlined" size="large" fullWidth
-                            onClick={() => navigate(`/p/${poll.poll_id}`)}
-                            startIcon={<HowToVoteIcon />}
-                          >
-                            Go to Voting Page
-                          </Button>
-                          <Button
-                            variant="outlined" size="large" fullWidth
-                            onClick={() => setIsShareDialogOpen(true)}
-                            startIcon={<ShareIcon />}
-                          >
-                            Share This Poll
-                          </Button>
-                        </>
-                      )}
-                      <Button
-                        variant="contained" size="large" fullWidth
-                        onClick={() => navigate('/')}
-                        startIcon={<AddCircleOutlineIcon />}
-                      >
-                        Create Your Own Poll
-                      </Button>
-                    </Stack>
-                  </Box>
+                <Box sx={{ textAlign: 'center', pt: 0.5 }}>
+                  <Typography variant="overline" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
+                    {isLive && "Live"} Results <LiveIndicator live={isLive} size={7} />
+                  </Typography>
+                </Box>
+
+                <Stack spacing={1.5}>
+                  {poll.options.map(option => {
+                    const voteCount = votes[option.id] || 0;
+                    return (
+                      <ResultBar
+                        key={option.id}
+                        option={option}
+                        voteCount={voteCount}
+                        totalVotes={totalVotes}
+                        isMultiChoice={poll.allow_multiple_choices}
+                        // Don't set any option as winning if there are no votes yet
+                        isWinning={totalVotes > 0 && voteCount === maxVotes}
+                      />
+                    );
+                  })}
                 </Stack>
-              </CardContent>
-            </Card>
-          </div>
-        </Fade>
-        <ShareDialog
-          open={isShareDialogOpen}
-          onClose={() => setIsShareDialogOpen(false)}
-          pollData={poll}
-        />
-      </>
+
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', pt: 1 }}>
+                  <strong>{totalVotes}</strong> Votes  cast.
+                </Typography>
+
+                <TimeRemaining
+                  activeUntil={poll.expire_at}
+                  prefixText="Poll expires in"
+                  closedText="This poll has expired."
+                  lessThanAMinuteText="This poll expires in less than a minute."
+                />
+
+                {/* Action Buttons */}
+                <Box sx={{ pt: 1.5 }}>
+                  <Divider sx={{ mb: 2.5 }} />
+                  <Stack spacing={1.5}>
+                    {isVotingActive && (
+                      <>
+                        <Button
+                          variant="outlined" size="large" fullWidth
+                          onClick={() => navigate(`/p/${poll.poll_id}`)}
+                          startIcon={<HowToVoteIcon />}
+                        >
+                          Go to Voting Page
+                        </Button>
+                        <Button
+                          variant="outlined" size="large" fullWidth
+                          onClick={() => setIsShareDialogOpen(true)}
+                          startIcon={<ShareIcon />}
+                        >
+                          Share This Poll
+                        </Button>
+                      </>
+                    )}
+                    <Button
+                      variant="contained" size="large" fullWidth
+                      onClick={() => navigate('/')}
+                      startIcon={<AddCircleOutlineIcon />}
+                    >
+                      Create Your Own Poll
+                    </Button>
+                  </Stack>
+                </Box>
+              </Stack>
+            </CardContent>
+          </Card>
+      </Fade>
     );
   };
 
@@ -247,7 +249,14 @@ function ResultsPage() {
     <Container maxWidth="sm">
       <Header />
       <ThemeProvider theme={pollTheme}>
-        {renderContent()}
+        <SwitchTransition mode="out-in">
+          {renderContent()}
+        </SwitchTransition>
+      <ShareDialog
+        open={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        pollData={poll}
+      />
       </ThemeProvider>
       <Footer />
     </Container>
