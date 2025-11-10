@@ -9,6 +9,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
+import { getMyPolls } from '../utils/storage';
 import ShareDialog from './ShareDialog';
 
 function PollStatusView({ status, poll, errorMessage }) {
@@ -36,8 +37,13 @@ function PollStatusView({ status, poll, errorMessage }) {
 
   const { title, message, Icon } = statusConfig[status];
 
+  // Check if this user is the creator of this poll
+  const myPolls = getMyPolls();
+  const pollInfo = myPolls.find(myPoll => myPoll?.poll_id === poll?.poll_id);
+  const isCreator = !!(pollInfo?.creator_key);
+
   // Check which actions are available
-  const canViewResults = poll?.public_results;
+  const canViewResults = poll?.public_results || isCreator;
   const canShare = !!poll && status !== 'closed';
 
   return (

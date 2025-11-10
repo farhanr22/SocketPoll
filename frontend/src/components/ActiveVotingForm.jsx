@@ -62,7 +62,7 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
           severity: 'error'
         });
       }
-    } 
+    }
     catch (err) {
       // This catch block is for any unexpected client side issues.
       console.error("An unexpected client-side error occurred:", err);
@@ -117,14 +117,6 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
                 lessThanAMinuteText="Voting closes in less than a minute."
               />
 
-              <Turnstile
-                siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
-                options={{ size: "flexible", theme: "light" }}
-                onSuccess={(token) => setTurnstileToken(token)}
-                onExpire={() => setTurnstileToken(null)}
-                onError={() => setTurnstileToken(null)}
-              />
-
               <Button
                 type="submit"
                 variant="contained"
@@ -139,6 +131,15 @@ function ActiveVotingForm({ poll, onVoteSuccess }) {
                 {!turnstileToken ? 'Running Captcha...' :
                   isSubmitting ? 'Submitting...' : 'Submit Vote'}
               </Button>
+
+              <Turnstile
+                siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
+                options={{ size: "flexible", theme: "light" }}
+                onSuccess={(token) => setTurnstileToken(token)}
+                onExpire={() => setTurnstileToken(null)}
+                onError={() => setTurnstileToken(null)}
+              />
+
             </Stack>
           </Box>
         </CardContent>
