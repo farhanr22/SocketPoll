@@ -4,11 +4,11 @@ function Footer() {
     return (
         <Box component="footer" sx={{ mt: 6, mb: 3, py: 2, textAlign: 'center' }}>
             <Box sx={{ maxWidth: '430px', mx: 'auto' }}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary" component="div">
                     Create, share, and view real-time results from anonymous polls.
                     
                     {/* Line break that doesn't apply on smaller screens */}
-                    <Box sx={{ display: { xs: 'none', sm: 'block' } }} /> 
+                    <Box sx={{ display: { xs: 'none', sm: 'block' } }} />             
                     {' '} Built with FastAPI, React, and WebSockets.
 
                     {' '}

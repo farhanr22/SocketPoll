@@ -35,6 +35,7 @@ function ResultsPage() {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isLive, setIsLive] = useState(false);
   const ws = useRef(null); // For keeping a single instance of WebSocket across renders
+  const reconnectTimer = useRef(null);   // Reconnection timer instance
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -66,13 +67,16 @@ function ResultsPage() {
       return;
     }
 
-    // Set up and create websocket only if there is no open connection
-    if (!ws.current || ws.current.readyState === WebSocket.CLOSED) {
+    const connect = () => {
+      // If there's an existing open connection, close it before creating a new one.
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        ws.current.close();
+      }
+
       const myPolls = getMyPolls();
       const pollInfo = myPolls.find(p => p.poll_id === pollId);
       const creatorKey = pollInfo ? pollInfo.creator_key : null;
 
-      // create endpoint URL
       const useSecureProtocols = import.meta.env.VITE_USE_SECURE_PROTOCOLS === 'true';
       const base = import.meta.env.VITE_API_BASE_URL;
       const wsProtocol = useSecureProtocols ? 'wss://' : 'ws://';
@@ -88,8 +92,12 @@ function ResultsPage() {
       socket.onopen = () => {
         console.log("WebSocket connected");
         setIsLive(true);
+        // Clear any reconnection timers upon successful connection
+        if (reconnectTimer.current) {
+          clearTimeout(reconnectTimer.current);
+          reconnectTimer.current = null;
+        }
       };
-
       // Update vote data when new data is recieved over WebSocket
       socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
@@ -99,17 +107,29 @@ function ResultsPage() {
       socket.onclose = () => {
         console.log("WebSocket disconnected");
         setIsLive(false);
+        // Set a timer to try reconnecting after 3 seconds
+        reconnectTimer.current = setTimeout(() => {
+          connect();
+        }, 3000);
       };
 
-      socket.onerror = (err) => console.error("WebSocket error:", err);
-    }
+      socket.onerror = (err) => {
+        console.error("WebSocket error:", err);
+      };
+    };
+
+    connect();
 
     // Cleanup
     return () => {
+      // Clear any pending reconnection timers
+      if (reconnectTimer.current) {
+        clearTimeout(reconnectTimer.current);
+      }
       // Don't try to tear down a connection that isn't open yet
-      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
         console.log("Cleanup: Closing WebSocket connection.");
-        socket.close();
+        ws.current.close();
       }
     };
 
@@ -151,96 +171,96 @@ function ResultsPage() {
 
     return (
       <Fade key="results" in={true} timeout={600}>
-          <Card sx={{ width: '100%' }}>
-            <CardContent sx={{ pt: 1.6, px: { xs: 2, sm: 2.5 }, mb: 1.3 }}>
-              <Stack spacing={0.7}>
+        <Card sx={{ width: '100%' }}>
+          <CardContent sx={{ pt: 1.6, px: { xs: 2, sm: 2.5 }, mb: 1.3 }}>
+            <Stack spacing={0.7}>
 
-                {/* Header section */}
+              {/* Header section */}
 
-                <Box>
-                  <PollIdBadge poll={poll} fontSize='0.825rem' />
+              <Box>
+                <PollIdBadge poll={poll} fontSize='0.825rem' />
 
-                  <Typography
-                    variant="h5" component="h2"
-                    sx={{ fontSize: { xs: '1.2rem', sm: '1.3rem' } }}
-                  >
-                    <Box component="span" sx={{ fontWeight: 'bold', color: 'primary.main', mr: 1 }}>
-                      Q:
-                    </Box>
-                    {poll.question}
-                  </Typography>
-                </Box>
-
-                {/* Results section  */}
-
-                <Box sx={{ textAlign: 'center', pt: 0.5 }}>
-                  <Typography variant="overline" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
-                    {isLive && "Live"} Results <LiveIndicator live={isLive} size={7} />
-                  </Typography>
-                </Box>
-
-                <Stack spacing={1.5}>
-                  {poll.options.map(option => {
-                    const voteCount = votes[option.id] || 0;
-                    return (
-                      <ResultBar
-                        key={option.id}
-                        option={option}
-                        voteCount={voteCount}
-                        totalVotes={totalVotes}
-                        isMultiChoice={poll.allow_multiple_choices}
-                        // Don't set any option as winning if there are no votes yet
-                        isWinning={totalVotes > 0 && voteCount === maxVotes}
-                      />
-                    );
-                  })}
-                </Stack>
-
-                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', pt: 1 }}>
-                  <strong>{totalVotes}</strong> Votes  cast.
+                <Typography
+                  variant="h5" component="h2"
+                  sx={{ fontSize: { xs: '1.2rem', sm: '1.3rem' } }}
+                >
+                  <Box component="span" sx={{ fontWeight: 'bold', color: 'primary.main', mr: 1 }}>
+                    Q:
+                  </Box>
+                  {poll.question}
                 </Typography>
+              </Box>
 
-                <TimeRemaining
-                  activeUntil={poll.expire_at}
-                  prefixText="Poll expires in"
-                  closedText="This poll has expired."
-                  lessThanAMinuteText="This poll expires in less than a minute."
-                />
+              {/* Results section  */}
 
-                {/* Action Buttons */}
-                <Box sx={{ pt: 1.5 }}>
-                  <Divider sx={{ mb: 2.5 }} />
-                  <Stack spacing={1.5}>
-                    {isVotingActive && (
-                      <>
-                        <Button
-                          variant="outlined" size="large" fullWidth
-                          onClick={() => navigate(`/p/${poll.poll_id}`)}
-                          startIcon={<HowToVoteIcon />}
-                        >
-                          Go to Voting Page
-                        </Button>
-                        <Button
-                          variant="outlined" size="large" fullWidth
-                          onClick={() => setIsShareDialogOpen(true)}
-                          startIcon={<ShareIcon />}
-                        >
-                          Share This Poll
-                        </Button>
-                      </>
-                    )}
-                    <Button
-                      variant="contained" size="large" fullWidth
-                      onClick={() => navigate('/')}
-                      startIcon={<AddCircleOutlineIcon />}
-                    >
-                      Create Your Own Poll
-                    </Button>
-                  </Stack>
-                </Box>
+              <Box sx={{ textAlign: 'center', pt: 0.5 }}>
+                <Typography variant="overline" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
+                  {isLive && "Live"} Results <LiveIndicator live={isLive} size={7} />
+                </Typography>
+              </Box>
+
+              <Stack spacing={1.5}>
+                {poll.options.map(option => {
+                  const voteCount = votes[option.id] || 0;
+                  return (
+                    <ResultBar
+                      key={option.id}
+                      option={option}
+                      voteCount={voteCount}
+                      totalVotes={totalVotes}
+                      isMultiChoice={poll.allow_multiple_choices}
+                      // Don't set any option as winning if there are no votes yet
+                      isWinning={totalVotes > 0 && voteCount === maxVotes}
+                    />
+                  );
+                })}
               </Stack>
-            </CardContent>
-          </Card>
+
+              <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', pt: 1 }}>
+                <strong>{totalVotes}</strong> Votes  cast.
+              </Typography>
+
+              <TimeRemaining
+                activeUntil={poll.expire_at}
+                prefixText="Poll expires in"
+                closedText="This poll has expired."
+                lessThanAMinuteText="This poll expires in less than a minute."
+              />
+
+              {/* Action Buttons */}
+              <Box sx={{ pt: 1.5 }}>
+                <Divider sx={{ mb: 2.5 }} />
+                <Stack spacing={1.5}>
+                  {isVotingActive && (
+                    <>
+                      <Button
+                        variant="outlined" size="large" fullWidth
+                        onClick={() => navigate(`/p/${poll.poll_id}`)}
+                        startIcon={<HowToVoteIcon />}
+                      >
+                        Go to Voting Page
+                      </Button>
+                      <Button
+                        variant="outlined" size="large" fullWidth
+                        onClick={() => setIsShareDialogOpen(true)}
+                        startIcon={<ShareIcon />}
+                      >
+                        Share This Poll
+                      </Button>
+                    </>
+                  )}
+                  <Button
+                    variant="contained" size="large" fullWidth
+                    onClick={() => navigate('/')}
+                    startIcon={<AddCircleOutlineIcon />}
+                  >
+                    Create Your Own Poll
+                  </Button>
+                </Stack>
+              </Box>
+            </Stack>
+          </CardContent>
+        </Card>
       </Fade>
     );
   };
@@ -252,11 +272,11 @@ function ResultsPage() {
         <SwitchTransition mode="out-in">
           {renderContent()}
         </SwitchTransition>
-      <ShareDialog
-        open={isShareDialogOpen}
-        onClose={() => setIsShareDialogOpen(false)}
-        pollData={poll}
-      />
+        <ShareDialog
+          open={isShareDialogOpen}
+          onClose={() => setIsShareDialogOpen(false)}
+          pollData={poll}
+        />
       </ThemeProvider>
       <Footer />
     </Container>
