@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-function ResultsErrorCard({ message }) {
+function ResultsErrorCard({ message, cat = false }) {
   const navigate = useNavigate();
 
   return (
@@ -24,6 +24,16 @@ function ResultsErrorCard({ message }) {
           </Typography>
 
           <Stack spacing={1.5} sx={{ pt: 1 }}>
+
+            {cat && (
+              <Box
+                component="img"
+                src="/cat.svg"
+                alt="Logo"
+                sx={{ width: "90%", maxWidth: 450, alignSelf: "center", pb:3 }}
+              />
+            )}
+
             <Button
               variant="contained" size="large" fullWidth
               onClick={() => navigate('/')}
@@ -31,7 +41,9 @@ function ResultsErrorCard({ message }) {
             >
               Create Your Own Poll
             </Button>
+            
           </Stack>
+
         </Stack>
       </CardContent>
     </Card>

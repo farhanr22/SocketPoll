@@ -22,7 +22,7 @@ function App() {
             <>
               <Header />
               <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
-                <ResultsErrorCard message="Page not found. The link may be incorrect." />
+                <ResultsErrorCard message="Page not found. The link may be incorrect." cat={true} />
               </Container>
               <Footer />
             </>
